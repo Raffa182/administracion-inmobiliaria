@@ -2,15 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatARS, formatDate, periodLabel, daysUntil } from "@/lib/format";
+import { formatEUR, formatDate, periodLabel, daysUntil } from "@/lib/format";
 import { ExpenseForm } from "@/components/expense-form";
 import { PaymentRow } from "@/components/payment-row";
 import { GeneratePaymentButton } from "@/components/generate-payment-button";
 
 const expenseLabels: Record<string, string> = {
-  ABL: "ABL",
+  IBI: "IBI",
   ARREGLO: "Arreglo",
-  EXPENSAS: "Expensas",
+  COMUNIDAD: "Comunidad",
   SEGURO: "Seguro",
   OTRO: "Otro",
 };
@@ -78,7 +78,7 @@ export default async function ContratoDetailPage({
                 }
                 warn={daysToEnd <= 60}
               />
-              <Info label="Monto del alquiler" value={formatARS(contract.rentAmount)} />
+              <Info label="Monto del alquiler" value={formatEUR(contract.rentAmount)} />
               <Info
                 label="Próxima actualización"
                 value={contract.nextAdjustmentDate ? formatDate(contract.nextAdjustmentDate) : "—"}
@@ -112,7 +112,7 @@ export default async function ContratoDetailPage({
             )}
           </Card>
 
-          <Card title="ABL y arreglos">
+          <Card title="IBI y arreglos">
             <div className="space-y-3">
               {contract.expenses.length === 0 && (
                 <p className="text-sm text-slate-400">Sin gastos registrados.</p>
@@ -128,7 +128,7 @@ export default async function ContratoDetailPage({
                     </p>
                     <p className="text-xs text-slate-500">{formatDate(exp.date)}</p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900">{formatARS(exp.amount)}</p>
+                  <p className="text-sm font-semibold text-slate-900">{formatEUR(exp.amount)}</p>
                 </div>
               ))}
             </div>

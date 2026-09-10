@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { formatARS, formatDate, periodLabel } from "@/lib/format";
+import { formatEUR, formatDate, periodLabel } from "@/lib/format";
 
 export type ReceiptData = {
   tenantName: string;
@@ -84,7 +84,7 @@ export async function generateReceiptPdf(data: ReceiptData): Promise<Uint8Array>
 
   y -= 40;
   page.drawText("Monto total pagado", { x: margin, y, size: 11, font, color: gray });
-  const amountStr = formatARS(data.amount);
+  const amountStr = formatEUR(data.amount);
   page.drawText(amountStr, {
     x: 595.28 - margin - bold.widthOfTextAtSize(amountStr, 22),
     y: y - 6,

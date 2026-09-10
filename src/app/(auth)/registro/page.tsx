@@ -60,7 +60,7 @@ export default function RegistroPage() {
             GI
           </div>
           <h1 className="mt-4 text-xl font-semibold text-slate-900">
-            Creá tu inmobiliaria
+            Crea tu inmobiliaria
           </h1>
           <p className="mt-1 text-sm text-slate-500">
             Cada inmobiliaria tiene sus datos aislados dentro de la plataforma
@@ -136,7 +136,7 @@ export default function RegistroPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-slate-500">
-          ¿Ya tenés cuenta?{" "}
+          ¿Ya tienes cuenta?{" "}
           <Link href="/login" className="font-medium text-slate-900 hover:underline">
             Ingresar
           </Link>

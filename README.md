@@ -1,8 +1,9 @@
 # Gestión Inmobiliaria
 
-Plataforma web multi-cliente para inmobiliarias: administración de alquileres,
-seguimiento de vencimientos y actualizaciones de contrato, ABL y arreglos, y
-generación automática de recibos en PDF al registrar un pago.
+Plataforma web multi-cliente para inmobiliarias (adaptada al mercado
+español): administración de alquileres, seguimiento de vencimientos y
+actualizaciones de renta, IBI y arreglos, y generación automática de
+recibos en PDF al registrar un pago.
 
 ## Stack
 
@@ -39,12 +40,15 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
 
 - **Dashboard de alquileres**: contratos activos, próximos a vencer (60
   días) y pagos pendientes, todo en una sola vista.
-- **Detalle de contrato**: fecha de inicio/fin, próxima actualización del
-  alquiler (con frecuencia configurable), contrato digitalizado (PDF/imagen
-  subido por el usuario), ABL y arreglos, historial de pagos.
+- **Detalle de contrato**: fecha de inicio/fin, próxima actualización de la
+  renta (revisión anual según IPC, frecuencia configurable), contrato
+  digitalizado (PDF/imagen subido por el usuario), IBI y arreglos,
+  historial de pagos.
 - **Recibo automático**: al marcar un pago como "Pagado" se genera al vuelo
   un PDF con los datos del recibo (inmobiliaria, propiedad, inquilino,
   período, monto, fecha) y queda disponible para descargar.
+- **Importes en euros** y formato de fecha/número con la configuración
+  regional española (`es-ES`).
 
 ## Desarrollo local
 

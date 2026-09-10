@@ -4,6 +4,18 @@ import { prisma } from "../src/lib/prisma";
 import { generateReceiptPdf } from "../src/lib/receipt";
 
 async function main() {
+  // Borrado explícito en orden de dependencias: SQLite no garantiza el
+  // orden en que dispara varios triggers ON DELETE CASCADE sobre el mismo
+  // padre (Tenant), y Contract -> Property/Renter es RESTRICT a propósito
+  // (no se puede borrar una propiedad con contratos vigentes).
+  const existing = { tenant: { slug: "demo" } };
+  await prisma.payment.deleteMany({ where: existing });
+  await prisma.expense.deleteMany({ where: existing });
+  await prisma.contract.deleteMany({ where: existing });
+  await prisma.property.deleteMany({ where: existing });
+  await prisma.renter.deleteMany({ where: existing });
+  await prisma.owner.deleteMany({ where: existing });
+  await prisma.user.deleteMany({ where: existing });
   await prisma.tenant.deleteMany({ where: { slug: "demo" } });
 
   const passwordHash = await bcrypt.hash("demo1234", 10);
@@ -28,7 +40,7 @@ async function main() {
       tenantId: tenant.id,
       name: "María Fernández",
       email: "maria@propietaria.com",
-      phone: "+54 11 4444-1111",
+      phone: "+34 611 222 333",
     },
   });
 
@@ -36,40 +48,40 @@ async function main() {
     prisma.property.create({
       data: {
         tenantId: tenant.id,
-        address: "Av. Corrientes 1234, 4°B",
-        type: "Departamento",
-        city: "CABA",
+        address: "Calle Gran Vía 34, 4ºB",
+        type: "Piso",
+        city: "Madrid",
         ownerId: owner.id,
       },
     }),
     prisma.property.create({
       data: {
         tenantId: tenant.id,
-        address: "Calle Falsa 742",
-        type: "Casa",
-        city: "San Isidro",
+        address: "Carrer de Mallorca 401, 2ºA",
+        type: "Ático",
+        city: "Barcelona",
         ownerId: owner.id,
       },
     }),
     prisma.property.create({
       data: {
         tenantId: tenant.id,
-        address: "Bulevar Oroño 550, 2°A",
-        type: "Departamento",
-        city: "Rosario",
+        address: "Calle Mayor 12, Bajo",
+        type: "Piso",
+        city: "Valencia",
       },
     }),
   ]);
 
   const renters = await Promise.all([
     prisma.renter.create({
-      data: { tenantId: tenant.id, name: "Juan Pérez", dni: "30111222", email: "juan@mail.com", phone: "+54 11 5555-0001" },
+      data: { tenantId: tenant.id, name: "Juan Pérez", dni: "30111222W", email: "juan@mail.com", phone: "+34 611 234 567" },
     }),
     prisma.renter.create({
-      data: { tenantId: tenant.id, name: "Lucía Gómez", dni: "32444555", email: "lucia@mail.com", phone: "+54 11 5555-0002" },
+      data: { tenantId: tenant.id, name: "Lucía Gómez", dni: "32444555L", email: "lucia@mail.com", phone: "+34 622 345 678" },
     }),
     prisma.renter.create({
-      data: { tenantId: tenant.id, name: "Carlos Sosa", dni: "28999888", email: "carlos@mail.com", phone: "+54 341 555-0003" },
+      data: { tenantId: tenant.id, name: "Carlos Sosa", dni: "28999888T", email: "carlos@mail.com", phone: "+34 633 456 789" },
     }),
   ]);
 
@@ -82,8 +94,8 @@ async function main() {
       renterId: renters[0].id,
       startDate: subMonths(now, 10),
       endDate: addMonths(now, 26), // dentro de contrato largo
-      rentAmount: 320000,
-      adjustmentFrequencyMonths: 3,
+      rentAmount: 950,
+      adjustmentFrequencyMonths: 12,
       nextAdjustmentDate: addDays(now, 12), // próxima actualización cercana
       status: "ACTIVO",
     },
@@ -96,8 +108,8 @@ async function main() {
       renterId: renters[1].id,
       startDate: subMonths(now, 22),
       endDate: addDays(now, 35), // vence pronto
-      rentAmount: 410000,
-      adjustmentFrequencyMonths: 6,
+      rentAmount: 1250,
+      adjustmentFrequencyMonths: 12,
       nextAdjustmentDate: addMonths(now, 4),
       status: "ACTIVO",
     },
@@ -110,9 +122,9 @@ async function main() {
       renterId: renters[2].id,
       startDate: subMonths(now, 4),
       endDate: addMonths(now, 20),
-      rentAmount: 265000,
-      adjustmentFrequencyMonths: 6,
-      nextAdjustmentDate: addMonths(now, 2),
+      rentAmount: 720,
+      adjustmentFrequencyMonths: 12,
+      nextAdjustmentDate: addMonths(now, 8),
       status: "ACTIVO",
     },
   });
@@ -123,9 +135,9 @@ async function main() {
         tenantId: tenant.id,
         contractId: contract1.id,
         propertyId: properties[0].id,
-        type: "ABL",
-        description: "ABL 2do bimestre",
-        amount: 18500,
+        type: "IBI",
+        description: "IBI anual",
+        amount: 340,
         date: subMonths(now, 1),
       },
       {
@@ -133,8 +145,8 @@ async function main() {
         contractId: contract1.id,
         propertyId: properties[0].id,
         type: "ARREGLO",
-        description: "Reparación de canilla de cocina",
-        amount: 12000,
+        description: "Reparación de grifo de cocina",
+        amount: 85,
         date: subMonths(now, 2),
       },
       {
@@ -142,17 +154,17 @@ async function main() {
         contractId: contract2.id,
         propertyId: properties[1].id,
         type: "ARREGLO",
-        description: "Pintura de living",
-        amount: 45000,
+        description: "Pintura del salón",
+        amount: 320,
         date: subMonths(now, 3),
       },
       {
         tenantId: tenant.id,
         contractId: contract2.id,
         propertyId: properties[1].id,
-        type: "ABL",
-        description: "ABL anual",
-        amount: 52000,
+        type: "COMUNIDAD",
+        description: "Cuota de comunidad (trimestral)",
+        amount: 180,
         date: subMonths(now, 6),
       },
     ],

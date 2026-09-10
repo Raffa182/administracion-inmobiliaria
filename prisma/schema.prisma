@@ -23,9 +23,9 @@ enum ContractStatus {
 }
 
 enum ExpenseType {
-  ABL
+  IBI
   ARREGLO
-  EXPENSAS
+  COMUNIDAD
   SEGURO
   OTRO
 }
@@ -105,7 +105,7 @@ model Property {
   address     String
   unit        String?
   city        String?
-  type        String   @default("Departamento")
+  type        String   @default("Piso")
   ownerId     String?
   owner       Owner?   @relation(fields: [ownerId], references: [id])
   createdAt   DateTime @default(now())
@@ -129,7 +129,8 @@ model Contract {
   startDate   DateTime
   endDate     DateTime
   rentAmount  Float
-  adjustmentFrequencyMonths Int      @default(6)
+  // En España la actualización anual según IPC (INE) es lo habitual (LAU)
+  adjustmentFrequencyMonths Int      @default(12)
   nextAdjustmentDate        DateTime?
   status      ContractStatus @default(ACTIVO)
 
@@ -148,7 +149,7 @@ model Contract {
   @@index([renterId])
 }
 
-// ABL, arreglos, expensas, etc. asociados a un contrato o directamente a una propiedad
+// IBI, arreglos, comunidad, etc. asociados a un contrato o directamente a una propiedad
 model Expense {
   id          String      @id @default(cuid())
   tenantId    String
