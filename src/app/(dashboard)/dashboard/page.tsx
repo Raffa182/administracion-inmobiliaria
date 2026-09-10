@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatARS, formatDate, daysUntil } from "@/lib/format";
+import { formatEUR, formatDate, daysUntil } from "@/lib/format";
 
 const statusStyles: Record<string, string> = {
   ACTIVO: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -100,7 +100,7 @@ export default async function DashboardPage() {
                     {c.nextAdjustmentDate ? formatDate(c.nextAdjustmentDate) : "—"}
                   </td>
                   <td className="px-5 py-4 font-medium text-slate-900">
-                    {formatARS(c.rentAmount)}
+                    {formatEUR(c.rentAmount)}
                   </td>
                   <td className="px-5 py-4">
                     {lastPayment ? (

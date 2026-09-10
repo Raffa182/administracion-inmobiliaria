@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { formatARS } from "@/lib/format";
+import { formatEUR } from "@/lib/format";
 
 export function PaymentRow({
   id,
@@ -34,7 +34,7 @@ export function PaymentRow({
       <div>
         <p className="text-sm font-medium text-slate-900 capitalize">{periodLabel}</p>
         <p className="text-xs text-slate-500">
-          {formatARS(amount)}
+          {formatEUR(amount)}
           {paidDate ? ` · pagado el ${paidDate}` : ""}
         </p>
       </div>

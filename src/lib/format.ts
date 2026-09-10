@@ -1,14 +1,14 @@
-export function formatARS(amount: number) {
-  return new Intl.NumberFormat("es-AR", {
+export function formatEUR(amount: number) {
+  return new Intl.NumberFormat("es-ES", {
     style: "currency",
-    currency: "ARS",
+    currency: "EUR",
     maximumFractionDigits: 0,
   }).format(amount);
 }
 
 export function formatDate(date: Date | string) {
   const d = typeof date === "string" ? new Date(date) : date;
-  return new Intl.DateTimeFormat("es-AR", {
+  return new Intl.DateTimeFormat("es-ES", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -29,5 +29,5 @@ export function currentPeriod() {
 export function periodLabel(period: string) {
   const [year, month] = period.split("-").map(Number);
   const d = new Date(year, month - 1, 1);
-  return new Intl.DateTimeFormat("es-AR", { month: "long", year: "numeric" }).format(d);
+  return new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric" }).format(d);
 }

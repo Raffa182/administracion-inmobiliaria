@@ -25,7 +25,7 @@ export default function LoginPage() {
     });
     setLoading(false);
     if (res?.error) {
-      setError("Datos incorrectos. Revisá la inmobiliaria, el email y la contraseña.");
+      setError("Datos incorrectos. Revisa la inmobiliaria, el email y la contraseña.");
       return;
     }
     router.push("/dashboard");
@@ -43,7 +43,7 @@ export default function LoginPage() {
             Ingresar a tu inmobiliaria
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            Accedé con el email de tu cuenta
+            Accede con el email de tu cuenta
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="vos@inmobiliaria.com"
+              placeholder="tu@inmobiliaria.com"
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
             />
           </div>

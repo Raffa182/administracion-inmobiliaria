@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
-  type: z.enum(["ABL", "ARREGLO", "EXPENSAS", "SEGURO", "OTRO"]),
+  type: z.enum(["IBI", "ARREGLO", "COMUNIDAD", "SEGURO", "OTRO"]),
   description: z.string().min(2),
   amount: z.coerce.number().positive(),
   date: z.string(),

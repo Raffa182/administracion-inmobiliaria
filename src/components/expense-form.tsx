@@ -44,9 +44,9 @@ export function ExpenseForm({ contractId }: { contractId: string }) {
           required
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
         >
-          <option value="ABL">ABL</option>
+          <option value="IBI">IBI</option>
           <option value="ARREGLO">Arreglo</option>
-          <option value="EXPENSAS">Expensas</option>
+          <option value="COMUNIDAD">Comunidad</option>
           <option value="SEGURO">Seguro</option>
           <option value="OTRO">Otro</option>
         </select>
@@ -59,7 +59,7 @@ export function ExpenseForm({ contractId }: { contractId: string }) {
       </div>
       <input
         name="description"
-        placeholder="Descripción (ej: ABL 3er bimestre)"
+        placeholder="Descripción (ej: IBI anual)"
         required
         className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
       />

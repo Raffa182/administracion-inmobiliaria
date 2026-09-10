@@ -56,7 +56,7 @@ export default function NuevoContratoPage() {
     setLoading(false);
 
     if (!res.ok) {
-      setError("No se pudo crear el contrato. Revisá los datos.");
+      setError("No se pudo crear el contrato. Revisa los datos.");
       return;
     }
 
@@ -68,23 +68,23 @@ export default function NuevoContratoPage() {
     <div className="max-w-3xl">
       <h1 className="text-2xl font-semibold text-slate-900">Nuevo contrato de alquiler</h1>
       <p className="text-sm text-slate-500 mt-1">
-        Cargá la propiedad, el inquilino y las condiciones del contrato
+        Carga la propiedad, el inquilino y las condiciones del contrato
       </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-6">
         <Section title="Propiedad">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Field label="Dirección" name="propertyAddress" required placeholder="Av. Siempre Viva 742" />
-            <Field label="Tipo" name="propertyType" placeholder="Departamento" defaultValue="Departamento" />
+            <Field label="Dirección" name="propertyAddress" required placeholder="Calle Alcalá 25, 3ºB" />
+            <Field label="Tipo" name="propertyType" placeholder="Piso" defaultValue="Piso" />
           </div>
         </Section>
 
         <Section title="Inquilino">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Nombre y apellido" name="renterName" required placeholder="Juan Pérez" />
-            <Field label="DNI" name="renterDni" placeholder="30123456" />
+            <Field label="DNI / NIE" name="renterDni" placeholder="12345678Z" />
             <Field label="Email" name="renterEmail" type="email" placeholder="juan@mail.com" />
-            <Field label="Teléfono" name="renterPhone" placeholder="+54 11 5555-5555" />
+            <Field label="Teléfono" name="renterPhone" placeholder="+34 611 234 567" />
           </div>
         </Section>
 
@@ -92,13 +92,13 @@ export default function NuevoContratoPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Field label="Fecha de inicio" name="startDate" type="date" required />
             <Field label="Fecha de fin" name="endDate" type="date" required />
-            <Field label="Monto del alquiler (ARS)" name="rentAmount" type="number" min={0} required placeholder="250000" />
+            <Field label="Monto del alquiler (€)" name="rentAmount" type="number" min={0} required placeholder="750" />
             <Field
               label="Actualiza cada (meses)"
               name="adjustmentFrequencyMonths"
               type="number"
               min={1}
-              defaultValue={6}
+              defaultValue={12}
               required
             />
           </div>
