@@ -4,10 +4,9 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
-  type: z.enum(["IBI", "BASURA", "ARREGLO", "COMUNIDAD", "SEGURO", "OTRO"]),
-  description: z.string().min(2),
-  amount: z.coerce.number().positive(),
-  date: z.string(),
+  type: z.enum(["DNI", "NOMINA", "CONTRATO_TRABAJO", "OTRO"]),
+  fileName: z.string().min(1),
+  fileData: z.string().min(1),
 });
 
 export async function POST(
@@ -18,27 +17,25 @@ export async function POST(
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   const { id } = await params;
 
-  const contract = await prisma.contract.findFirst({
+  const buyer = await prisma.buyer.findFirst({
     where: { id, tenantId: session.user.tenantId },
   });
-  if (!contract) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
+  if (!buyer) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
   }
 
-  const expense = await prisma.expense.create({
+  const document = await prisma.personDocument.create({
     data: {
       tenantId: session.user.tenantId,
-      contractId: contract.id,
-      propertyId: contract.propertyId,
+      buyerId: buyer.id,
       type: parsed.data.type,
-      description: parsed.data.description,
-      amount: parsed.data.amount,
-      date: new Date(parsed.data.date),
+      fileName: parsed.data.fileName,
+      fileData: parsed.data.fileData,
     },
   });
 
-  return NextResponse.json(expense);
+  return NextResponse.json(document);
 }

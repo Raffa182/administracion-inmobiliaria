@@ -35,10 +35,22 @@ export default async function DashboardLayout({
               Alquileres
             </Link>
             <Link
-              href="/dashboard/contratos/nuevo"
+              href="/dashboard/reservas"
               className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
             >
-              Nuevo contrato
+              Reservas
+            </Link>
+            <Link
+              href="/dashboard/ventas"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+            >
+              Ventas
+            </Link>
+            <Link
+              href="/dashboard/propiedades"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+            >
+              Propiedades
             </Link>
           </nav>
 
