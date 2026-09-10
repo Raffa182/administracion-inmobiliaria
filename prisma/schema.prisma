@@ -1,0 +1,191 @@
+// Prisma schema - Gestión Inmobiliaria (multi-tenant)
+// docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  AGENTE
+}
+
+enum ContractStatus {
+  ACTIVO
+  FINALIZADO
+  RESCINDIDO
+}
+
+enum ExpenseType {
+  ABL
+  ARREGLO
+  EXPENSAS
+  SEGURO
+  OTRO
+}
+
+enum PaymentStatus {
+  PENDIENTE
+  PAGADO
+  VENCIDO
+}
+
+// Cada Tenant representa una inmobiliaria / cliente de la plataforma.
+// El aislamiento de datos es lógico (tenantId en cada tabla); ver README
+// para la estrategia de escalado a bases de datos físicas separadas.
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  users      User[]
+  properties Property[]
+  renters    Renter[]
+  owners     Owner[]
+  contracts  Contract[]
+  expenses   Expense[]
+  payments   Payment[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  tenantId     String
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  email        String
+  passwordHash String
+  name         String
+  role         Role     @default(ADMIN)
+  emailVerified DateTime?
+  createdAt    DateTime @default(now())
+
+  @@unique([tenantId, email])
+  @@index([email])
+}
+
+model Owner {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+
+  properties Property[]
+
+  @@index([tenantId])
+}
+
+model Renter {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name      String
+  dni       String?
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+
+  contracts Contract[]
+
+  @@index([tenantId])
+}
+
+model Property {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  address     String
+  unit        String?
+  city        String?
+  type        String   @default("Departamento")
+  ownerId     String?
+  owner       Owner?   @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+
+  contracts Contract[]
+  expenses  Expense[]
+
+  @@index([tenantId])
+}
+
+// Alquiler
+model Contract {
+  id          String         @id @default(cuid())
+  tenantId    String
+  tenant      Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property       @relation(fields: [propertyId], references: [id])
+  renterId    String
+  renter      Renter         @relation(fields: [renterId], references: [id])
+
+  startDate   DateTime
+  endDate     DateTime
+  rentAmount  Float
+  adjustmentFrequencyMonths Int      @default(6)
+  nextAdjustmentDate        DateTime?
+  status      ContractStatus @default(ACTIVO)
+
+  // Contrato digitalizado (PDF escaneado / firmado subido por el usuario)
+  contractFileName String?
+  contractFileData  String? // data URL / base64 (MVP: almacenado en DB; ver README para migrar a storage externo)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  expenses Expense[]
+  payments Payment[]
+
+  @@index([tenantId])
+  @@index([propertyId])
+  @@index([renterId])
+}
+
+// ABL, arreglos, expensas, etc. asociados a un contrato o directamente a una propiedad
+model Expense {
+  id          String      @id @default(cuid())
+  tenantId    String
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contractId  String?
+  contract    Contract?   @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  propertyId  String?
+  property    Property?   @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  type        ExpenseType
+  description String
+  amount      Float
+  date        DateTime
+  createdAt   DateTime    @default(now())
+
+  @@index([tenantId])
+  @@index([contractId])
+}
+
+// Pago mensual de alquiler -> al marcarse PAGADO se genera un recibo en PDF
+model Payment {
+  id          String        @id @default(cuid())
+  tenantId    String
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contractId  String
+  contract    Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  period      String        // "2026-09"
+  amount      Float
+  dueDate     DateTime
+  paidDate    DateTime?
+  status      PaymentStatus @default(PENDIENTE)
+  receiptFileName String?
+  receiptFileData  String?  // PDF generado, guardado como base64 (MVP)
+  createdAt   DateTime      @default(now())
+
+  @@unique([contractId, period])
+  @@index([tenantId])
+  @@index([status])
+}
