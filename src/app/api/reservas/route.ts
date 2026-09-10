@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { addMonths } from "date-fns";
 
 const schema = z.object({
   propertyId: z.string().optional(),
@@ -13,21 +12,16 @@ const schema = z.object({
   renterDni: z.string().optional(),
   renterEmail: z.string().email().optional().or(z.literal("")),
   renterPhone: z.string().optional(),
-  contractType: z.enum(["LARGA_TEMPORADA", "TEMPORADA"]),
-  startDate: z.string(),
-  endDate: z.string(),
-  rentAmount: z.coerce.number().positive(),
-  adjustmentFrequencyMonths: z.coerce.number().int().positive(),
-  contractFileName: z.string().optional(),
-  contractFileData: z.string().optional(),
+  reservationDate: z.string(),
+  amount: z.coerce.number().positive(),
+  notes: z.string().optional(),
 });
 
 export async function POST(req: Request) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
 
-  const body = await req.json().catch(() => null);
-  const parsed = schema.safeParse(body);
+  const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Datos inválidos", issues: parsed.error.issues },
@@ -72,24 +66,16 @@ export async function POST(req: Request) {
     renterId = renter.id;
   }
 
-  const startDate = new Date(data.startDate);
-  const nextAdjustmentDate = addMonths(startDate, data.adjustmentFrequencyMonths);
-
-  const contract = await prisma.contract.create({
+  const reservation = await prisma.reservation.create({
     data: {
       tenantId,
       propertyId,
       renterId,
-      contractType: data.contractType,
-      startDate,
-      endDate: new Date(data.endDate),
-      rentAmount: data.rentAmount,
-      adjustmentFrequencyMonths: data.adjustmentFrequencyMonths,
-      nextAdjustmentDate,
-      contractFileName: data.contractFileName || undefined,
-      contractFileData: data.contractFileData || undefined,
+      reservationDate: new Date(data.reservationDate),
+      amount: data.amount,
+      notes: data.notes || undefined,
     },
   });
 
-  return NextResponse.json({ id: contract.id });
+  return NextResponse.json({ id: reservation.id });
 }

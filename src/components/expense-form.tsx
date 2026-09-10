@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function ExpenseForm({ contractId }: { contractId: string }) {
+export function ExpenseForm({ endpoint }: { endpoint: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +14,7 @@ export function ExpenseForm({ contractId }: { contractId: string }) {
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const res = await fetch(`/api/contratos/${contractId}/gastos`, {
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -45,6 +45,7 @@ export function ExpenseForm({ contractId }: { contractId: string }) {
           className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
         >
           <option value="IBI">IBI</option>
+          <option value="BASURA">Basura</option>
           <option value="ARREGLO">Arreglo</option>
           <option value="COMUNIDAD">Comunidad</option>
           <option value="SEGURO">Seguro</option>

@@ -3,17 +3,11 @@ import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatEUR, formatDate, periodLabel, daysUntil } from "@/lib/format";
+import { expenseLabels, contractTypeLabels, personDocumentLabels } from "@/lib/labels";
 import { ExpenseForm } from "@/components/expense-form";
 import { PaymentRow } from "@/components/payment-row";
 import { GeneratePaymentButton } from "@/components/generate-payment-button";
-
-const expenseLabels: Record<string, string> = {
-  IBI: "IBI",
-  ARREGLO: "Arreglo",
-  COMUNIDAD: "Comunidad",
-  SEGURO: "Seguro",
-  OTRO: "Otro",
-};
+import { FileUploadForm } from "@/components/file-upload-form";
 
 export default async function ContratoDetailPage({
   params,
@@ -28,7 +22,7 @@ export default async function ContratoDetailPage({
     where: { id, tenantId },
     include: {
       property: true,
-      renter: true,
+      renter: { include: { documents: { orderBy: { createdAt: "desc" } } } },
       expenses: { orderBy: { date: "desc" } },
       payments: { orderBy: { period: "desc" } },
     },
@@ -49,10 +43,16 @@ export default async function ContratoDetailPage({
         </Link>
         <div className="mt-2 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{contract.property.address}</h1>
+            <h1 className="text-2xl font-semibold text-slate-900">
+              <Link href={`/dashboard/propiedades/${contract.propertyId}`} className="hover:underline">
+                {contract.property.address}
+              </Link>
+            </h1>
             <p className="text-sm text-slate-500 mt-1">
               {contract.property.type} · Inquilino: {contract.renter.name}
               {contract.renter.dni ? ` (DNI ${contract.renter.dni})` : ""}
+              {" · "}
+              {contractTypeLabels[contract.contractType]}
             </p>
           </div>
           <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
@@ -65,6 +65,7 @@ export default async function ContratoDetailPage({
         <div className="lg:col-span-2 space-y-6">
           <Card title="Datos del contrato">
             <dl className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
+              <Info label="Tipo de contrato" value={contractTypeLabels[contract.contractType]} />
               <Info label="Fecha de inicio" value={formatDate(contract.startDate)} />
               <Info
                 label="Fecha de fin"
@@ -112,6 +113,38 @@ export default async function ContratoDetailPage({
             )}
           </Card>
 
+          <Card title="Documentación del inquilino">
+            <div className="space-y-2">
+              {contract.renter.documents.length === 0 && (
+                <p className="text-sm text-slate-400">Sin documentos cargados.</p>
+              )}
+              {contract.renter.documents.map((doc) => (
+                <a
+                  key={doc.id}
+                  href={doc.fileData}
+                  download={doc.fileName}
+                  className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+                >
+                  <span className="text-sm text-slate-900">
+                    📄 {personDocumentLabels[doc.type]} · {doc.fileName}
+                  </span>
+                  <span className="text-xs text-slate-400">{formatDate(doc.createdAt)}</span>
+                </a>
+              ))}
+            </div>
+            <div className="mt-4 pt-4 border-t border-slate-100">
+              <FileUploadForm
+                endpoint={`/api/renters/${contract.renterId}/documentos`}
+                typeOptions={[
+                  { value: "DNI", label: "DNI" },
+                  { value: "NOMINA", label: "Nómina" },
+                  { value: "CONTRATO_TRABAJO", label: "Contrato de trabajo" },
+                  { value: "OTRO", label: "Otro" },
+                ]}
+              />
+            </div>
+          </Card>
+
           <Card title="IBI y arreglos">
             <div className="space-y-3">
               {contract.expenses.length === 0 && (
@@ -133,7 +166,7 @@ export default async function ContratoDetailPage({
               ))}
             </div>
             <div className="mt-4 pt-4 border-t border-slate-100">
-              <ExpenseForm contractId={contract.id} />
+              <ExpenseForm endpoint={`/api/contratos/${contract.id}/gastos`} />
             </div>
           </Card>
         </div>

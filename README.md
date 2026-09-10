@@ -1,9 +1,11 @@
 # Gestión Inmobiliaria
 
 Plataforma web multi-cliente para inmobiliarias (adaptada al mercado
-español): administración de alquileres, seguimiento de vencimientos y
-actualizaciones de renta, IBI y arreglos, y generación automática de
-recibos en PDF al registrar un pago.
+español): ficha completa de cada propiedad, reservas previas al contrato,
+alquileres (larga temporada y temporada) con seguimiento de vencimientos y
+actualizaciones de renta, ventas, documentación (DNI, nóminas, escrituras,
+recibos de IBI/basura) y fotos (incluida la identificación de llaves), y
+generación automática de recibos en PDF al registrar un pago.
 
 ## Stack
 
@@ -38,15 +40,31 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
 
 ## Funcionalidad
 
+- **Propiedades**: ficha completa de cada inmueble (m², habitaciones,
+  mascotas, electrodomésticos, amueblado, parking, urbanización, precio
+  orientativo de alquiler/venta), fotos de la propiedad, fotos de llaves
+  (para identificar cuál llave es de cuál propiedad), documentos
+  (escritura, etc.) y el histórico de gastos, contratos y ventas
+  vinculados. Las propiedades se cargan una sola vez y después se
+  reutilizan desde reservas, contratos y ventas (o se crean nuevas al
+  vuelo desde esos mismos formularios).
+- **Reservas**: paso previo al contrato de alquiler, con la seña/honorarios
+  acordados. Se pueden cancelar o convertir en un contrato (que hereda la
+  propiedad y el inquilino de la reserva).
 - **Dashboard de alquileres**: contratos activos, próximos a vencer (60
-  días) y pagos pendientes, todo en una sola vista.
+  días) y pagos pendientes, todo en una sola vista. Cada contrato indica
+  si es de **larga temporada** o **temporada**.
 - **Detalle de contrato**: fecha de inicio/fin, próxima actualización de la
   renta (revisión anual según IPC, frecuencia configurable), contrato
-  digitalizado (PDF/imagen subido por el usuario), IBI y arreglos,
+  digitalizado (PDF/imagen subido por el usuario), documentación del
+  inquilino (DNI, nómina, contrato de trabajo), IBI/basura y arreglos,
   historial de pagos.
 - **Recibo automático**: al marcar un pago como "Pagado" se genera al vuelo
   un PDF con los datos del recibo (inmobiliaria, propiedad, inquilino,
   período, monto, fecha) y queda disponible para descargar.
+- **Ventas**: propiedad, comprador (opcional al crearla), precio y estado
+  (disponible/reservada/vendida/cancelada), con la documentación de la
+  propiedad (escritura, IBI, basura) y del comprador (DNI, nómina).
 - **Importes en euros** y formato de fecha/número con la configuración
   regional española (`es-ES`).
 
@@ -77,14 +95,18 @@ npm run db:seed
 
 ```
 prisma/schema.prisma        Modelo de datos (Tenant, User, Property, Renter,
-                             Contract, Expense, Payment)
+                             Buyer, Contract, Reservation, Sale, Expense,
+                             Payment, PersonDocument, PropertyDocument,
+                             PropertyPhoto)
 prisma/seed.ts               Datos de demo
 src/lib/auth.ts              Configuración de Auth.js (Credentials)
 src/lib/auth.config.ts       Config "edge-safe" reutilizada por el middleware
 src/lib/receipt.ts           Generación del PDF de recibo (pdf-lib)
+src/lib/labels.ts            Etiquetas compartidas para los enums del dominio
 src/app/(auth)/              Login y registro
-src/app/(dashboard)/         Dashboard y detalle/alta de contratos
-src/app/api/                 Rutas API (contratos, gastos, pagos, recibos)
+src/app/(dashboard)/         Dashboard, propiedades, reservas, contratos, ventas
+src/app/api/                 Rutas API (propiedades, reservas, contratos,
+                             ventas, gastos, pagos, recibos, documentos, fotos)
 ```
 
 ## Próximos pasos sugeridos
