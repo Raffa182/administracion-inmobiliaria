@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* dark: responde a la clase .dark (la pone next-themes), no a
+   prefers-color-scheme directo — así "System" también puede resolverse
+   a un valor fijo en vez de seguir el SO en vivo. Por ahora solo el
+   portal del inquilino/comprador usa variantes dark:. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

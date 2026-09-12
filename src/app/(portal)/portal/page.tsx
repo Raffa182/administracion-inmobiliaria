@@ -4,11 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { formatEUR, formatDate } from "@/lib/format";
 import { saleStatusLabels, saleStatusStyles } from "@/lib/labels";
 import { PortalSignOutButton } from "@/components/portal-sign-out-button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const paymentStatusStyles: Record<string, string> = {
-  PAGADO: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  PENDIENTE: "bg-amber-50 text-amber-700 border-amber-200",
-  VENCIDO: "bg-red-50 text-red-700 border-red-200",
+  PAGADO:
+    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+  PENDIENTE:
+    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+  VENCIDO:
+    "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800",
 };
 const paymentStatusLabels: Record<string, string> = {
   PAGADO: "Pagado",
@@ -39,16 +43,21 @@ export default async function PortalPage() {
       : [];
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-slate-900 leading-tight">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-50 leading-tight">
               {session.tenantName}
             </p>
-            <p className="text-xs text-slate-500 leading-tight">{session.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
+              {session.name}
+            </p>
           </div>
-          <PortalSignOutButton />
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <PortalSignOutButton />
+          </div>
         </div>
       </header>
 
@@ -56,23 +65,29 @@ export default async function PortalPage() {
         {contracts.map((c) => (
           <section
             key={c.id}
-            className="bg-white border border-slate-200 rounded-2xl p-5 space-y-4"
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4"
           >
             <div>
-              <h2 className="text-lg font-semibold text-slate-900">{c.property.address}</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+                {c.property.address}
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
                 {formatDate(c.startDate)} → {formatDate(c.endDate)} · {formatEUR(c.rentAmount)}/mes
               </p>
             </div>
-            <div className="divide-y divide-slate-100 border-t border-slate-100">
+            <div className="divide-y divide-slate-100 dark:divide-slate-800 border-t border-slate-100 dark:border-slate-800">
               {c.payments.map((p) => (
                 <div key={p.id} className="flex items-center justify-between py-2.5">
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{p.period}</p>
-                    <p className="text-xs text-slate-500">Vence {formatDate(p.dueDate)}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
+                      {p.period}
+                    </p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Vence {formatDate(p.dueDate)}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-medium text-slate-900">
+                    <span className="text-sm font-medium text-slate-900 dark:text-slate-50">
                       {formatEUR(p.amount)}
                     </span>
                     <span
@@ -84,16 +99,23 @@ export default async function PortalPage() {
                 </div>
               ))}
               {c.payments.length === 0 && (
-                <p className="py-3 text-sm text-slate-400">Todavía no hay pagos cargados.</p>
+                <p className="py-3 text-sm text-slate-400 dark:text-slate-500">
+                  Todavía no hay pagos cargados.
+                </p>
               )}
             </div>
           </section>
         ))}
 
         {sales.map((s) => (
-          <section key={s.id} className="bg-white border border-slate-200 rounded-2xl p-5 space-y-2">
-            <h2 className="text-lg font-semibold text-slate-900">{s.property.address}</h2>
-            <p className="text-sm text-slate-500">{formatEUR(s.price)}</p>
+          <section
+            key={s.id}
+            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-2"
+          >
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-50">
+              {s.property.address}
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{formatEUR(s.price)}</p>
             <span
               className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${saleStatusStyles[s.status]}`}
             >
@@ -103,7 +125,7 @@ export default async function PortalPage() {
         ))}
 
         {contracts.length === 0 && sales.length === 0 && (
-          <p className="text-center text-sm text-slate-400 py-12">
+          <p className="text-center text-sm text-slate-400 dark:text-slate-500 py-12">
             No encontramos contratos ni operaciones asociadas a tu cuenta todavía.
           </p>
         )}

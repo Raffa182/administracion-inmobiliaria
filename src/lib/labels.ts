@@ -26,10 +26,14 @@ export const saleStatusLabels: Record<string, string> = {
 };
 
 export const saleStatusStyles: Record<string, string> = {
-  DISPONIBLE: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  RESERVADA: "bg-amber-50 text-amber-700 border-amber-200",
-  VENDIDA: "bg-slate-100 text-slate-600 border-slate-200",
-  CANCELADA: "bg-red-50 text-red-700 border-red-200",
+  DISPONIBLE:
+    "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800",
+  RESERVADA:
+    "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800",
+  VENDIDA:
+    "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700",
+  CANCELADA:
+    "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-800",
 };
 
 export const reservationStatusLabels: Record<string, string> = {
