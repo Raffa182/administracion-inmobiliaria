@@ -10,7 +10,7 @@ generación automática de recibos en PDF al registrar un pago.
 ## Stack
 
 - **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS**
-- **Prisma** + **SQLite** (fácilmente migrable a Postgres/MySQL en producción)
+- **Prisma** + **PostgreSQL**
 - **Auth.js (NextAuth v5)** con Credentials — login por email + contraseña
 - **pdf-lib** para la generación de los recibos de pago
 
@@ -103,10 +103,13 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
 
 ## Desarrollo local
 
+Requiere una instancia de PostgreSQL corriendo (local, Docker, o en otra
+LXC — ver la sección de despliegue más abajo).
+
 ```bash
 npm install
-cp .env.example .env       # completar AUTH_SECRET con un valor propio
-npx prisma migrate dev     # crea la base SQLite y corre el seed de demo
+cp .env.example .env       # completar DATABASE_URL y AUTH_SECRET
+npx prisma migrate dev     # crea el schema y corre el seed de demo
 npm run dev
 ```
 
@@ -123,6 +126,82 @@ Para volver a cargar los datos de demo en cualquier momento:
 ```bash
 npm run db:seed
 ```
+
+## Despliegue: PostgreSQL en su propia LXC
+
+En producción la base vive en una LXC separada de la app (más fácil de
+respaldar, actualizar y escalar sin tocar el servidor web).
+
+**1. Crear la LXC** (desde el host Proxmox):
+
+```bash
+pct create 201 local:vztmpl/debian-12-standard_12.7-1_amd64.tar.zst \
+  --hostname db-inmobiliaria \
+  --cores 2 --memory 2048 --swap 512 \
+  --rootfs local-lvm:20 \
+  --net0 name=eth0,bridge=vmbr0,ip=10.0.0.20/24,gw=10.0.0.1 \
+  --unprivileged 1 --features nesting=1
+pct start 201
+```
+
+Ajustar `ip`/`gw`/`bridge` a la red interna real donde también vive la LXC
+de la app. **Postgres no necesita salir a internet ni ser alcanzable desde
+afuera** — solo desde la LXC de la app.
+
+**2. Instalar y configurar Postgres dentro de la LXC:**
+
+```bash
+pct exec 201 -- bash -c "
+  apt update && apt install -y postgresql postgresql-contrib &&
+  sudo -u postgres psql -c \"CREATE ROLE inmobiliaria WITH LOGIN PASSWORD 'CAMBIAR-ESTA-CLAVE';\" &&
+  sudo -u postgres psql -c \"CREATE DATABASE inmobiliaria OWNER inmobiliaria;\"
+"
+```
+
+Editar dentro de la LXC:
+
+- `/etc/postgresql/*/main/postgresql.conf`: `listen_addresses = '10.0.0.20'`
+  (la IP de esta LXC, no `*`).
+- `/etc/postgresql/*/main/pg_hba.conf`: agregar una línea que solo permita
+  la IP de la LXC de la app, por ejemplo:
+  `host  inmobiliaria  inmobiliaria  10.0.0.10/32  scram-sha-256`
+
+Reiniciar: `pct exec 201 -- systemctl restart postgresql`.
+
+Si Proxmox tiene firewall activado, agregar una regla en la LXC de Postgres
+que permita el puerto 5432 **solo** desde la IP de la LXC de la app, y
+deniegue el resto.
+
+**3. Migrar los datos existentes** (si ya hay una inmobiliaria real cargada
+en el SQLite viejo):
+
+```bash
+# Desde la LXC de la app, con pgloader instalado:
+pgloader /opt/administracion-inmobiliaria/prisma/dev.db \
+  postgresql://inmobiliaria:CAMBIAR-ESTA-CLAVE@10.0.0.20/inmobiliaria
+```
+
+Si es una instalación nueva sin datos reales que conservar, se puede saltar
+este paso y usar directamente `npx prisma migrate deploy` + `npm run db:seed`.
+
+**4. Apuntar la app a la nueva base** (en la LXC de la app):
+
+```bash
+# En /opt/administracion-inmobiliaria/.env
+DATABASE_URL="postgresql://inmobiliaria:CAMBIAR-ESTA-CLAVE@10.0.0.20:5432/inmobiliaria?schema=public"
+```
+
+```bash
+cd /opt/administracion-inmobiliaria
+npx prisma migrate deploy   # aplica el schema (no usar "migrate dev" en producción)
+npm run build
+# reiniciar el proceso de la app (pm2 restart, systemctl restart, etc.)
+```
+
+**Backups**: programar un `pg_dump` diario desde un cron en la LXC de
+Postgres, comprimido y copiado fuera de esa misma LXC (otro disco, otro
+host, o un bucket). Un backup que vive solo en la misma LXC que puede
+corromperse no cuenta como backup.
 
 ## Estructura
 
