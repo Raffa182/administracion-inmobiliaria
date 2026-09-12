@@ -1,9 +1,24 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
-import { ToggleTenantActiveButton } from "@/components/toggle-tenant-active-button";
+import { AdminSearchBox } from "@/components/admin-search-box";
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
+
   const tenants = await prisma.tenant.findMany({
+    where: q
+      ? {
+          OR: [
+            { name: { contains: q } },
+            { slug: { contains: q } },
+          ],
+        }
+      : undefined,
     orderBy: { createdAt: "desc" },
     include: {
       _count: {
@@ -19,16 +34,38 @@ export default async function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Inmobiliarias</h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Todas las cuentas dadas de alta en la plataforma.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-slate-900">Inmobiliarias</h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Todas las cuentas dadas de alta en la plataforma.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/auditoria"
+            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          >
+            Auditoría
+          </Link>
+          <Link
+            href="/admin/nueva"
+            className="rounded-lg bg-slate-900 text-white px-3 py-2 text-sm font-medium hover:bg-slate-800"
+          >
+            Nueva inmobiliaria
+          </Link>
+        </div>
       </div>
+
+      <AdminSearchBox />
 
       <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100">
         {tenants.map((tenant) => (
-          <div key={tenant.id} className="flex items-center justify-between px-5 py-4">
+          <Link
+            key={tenant.id}
+            href={`/admin/${tenant.id}`}
+            className="flex items-center justify-between px-5 py-4 hover:bg-slate-50"
+          >
             <div className="flex items-center gap-3">
               {tenant.logoFileData ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -57,19 +94,18 @@ export default async function AdminPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
-              <div className="hidden sm:flex items-center gap-4 text-xs text-slate-500">
-                <span>{tenant._count.users} usuarios</span>
-                <span>{tenant._count.properties} propiedades</span>
-                <span>{tenant._count.contracts} contratos</span>
-                <span>{tenant._count.sales} ventas</span>
-              </div>
-              <ToggleTenantActiveButton tenantId={tenant.id} active={tenant.active} />
+            <div className="hidden sm:flex items-center gap-4 text-xs text-slate-500">
+              <span>{tenant._count.users} usuarios</span>
+              <span>{tenant._count.properties} propiedades</span>
+              <span>{tenant._count.contracts} contratos</span>
+              <span>{tenant._count.sales} ventas</span>
             </div>
-          </div>
+          </Link>
         ))}
         {tenants.length === 0 && (
-          <p className="text-sm text-slate-400 px-5 py-4">No hay inmobiliarias dadas de alta.</p>
+          <p className="text-sm text-slate-400 px-5 py-4">
+            No hay inmobiliarias que coincidan con la búsqueda.
+          </p>
         )}
       </div>
     </div>

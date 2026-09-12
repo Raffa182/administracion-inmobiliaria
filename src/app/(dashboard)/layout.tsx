@@ -25,6 +25,24 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
+      {session?.user?.impersonating && (
+        <form
+          action="/api/admin/impersonar/salir"
+          method="POST"
+          className="bg-amber-500 text-white text-sm px-4 py-2 flex items-center justify-between gap-3"
+        >
+          <span>
+            Estás viendo como <b>{session.user.tenantName}</b> (modo soporte, entraste desde
+            Super Admin).
+          </span>
+          <button
+            type="submit"
+            className="shrink-0 rounded-lg bg-white/20 hover:bg-white/30 px-3 py-1 font-medium transition"
+          >
+            Volver a admin
+          </button>
+        </form>
+      )}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">

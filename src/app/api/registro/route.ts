@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { slugify } from "@/lib/slug";
 
 const schema = z.object({
   inmobiliaria: z.string().min(2),
@@ -9,15 +10,6 @@ const schema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
 });
-
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-}
 
 export async function POST(req: Request) {
   const body = await req.json().catch(() => null);

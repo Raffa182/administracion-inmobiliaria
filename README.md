@@ -45,11 +45,24 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   configuración (`/dashboard/configuracion`: logo de la inmobiliaria).
 - **AGENTE**: acceso operativo normal, sin gestión de equipo ni configuración.
 - **SUPERADMIN**: rol de plataforma, no pertenece a una inmobiliaria real.
-  Al iniciar sesión se lo redirige a `/admin`, donde ve todas las
-  inmobiliarias dadas de alta (usuarios, propiedades, contratos, ventas) y
-  puede activar/desactivar el acceso de cada una (un tenant desactivado no
-  puede iniciar sesión). Vive en un tenant dedicado (`plataforma`, creado
-  por el seed) que solo existe para alojarlo.
+  Al iniciar sesión se lo redirige a `/admin`, donde puede:
+  - Ver todas las inmobiliarias con métricas básicas, y buscarlas por
+    nombre/slug.
+  - Activar/desactivar el acceso de una inmobiliaria (una desactivada no
+    puede iniciar sesión).
+  - Editar el nombre/slug de una inmobiliaria, o borrarla por completo
+    (con todos sus datos; requiere escribir el slug para confirmar).
+  - Dar de alta una inmobiliaria manualmente, con su primer usuario admin.
+  - Resetear la contraseña de cualquier usuario (soporte cuando el cliente
+    se queda sin acceso).
+  - **Entrar como una inmobiliaria** ("impersonar"): toma la identidad de
+    su primer usuario ADMIN para ver la app exactamente como la ve ese
+    cliente. Un banner naranja indica que está en modo soporte y permite
+    volver a `/admin` con un clic.
+  - Ver el log de auditoría (`/admin/auditoria`) de todas estas acciones.
+
+  Vive en un tenant dedicado (`plataforma`, creado por el seed) que solo
+  existe para alojarlo.
 
 ## Funcionalidad
 
@@ -116,19 +129,23 @@ npm run db:seed
 prisma/schema.prisma        Modelo de datos (Tenant, User, Property, Renter,
                              Buyer, Contract, Reservation, Sale, Expense,
                              Payment, PersonDocument, PropertyDocument,
-                             PropertyPhoto)
+                             PropertyPhoto, AdminAuditLog)
 prisma/seed.ts               Datos de demo
 src/lib/auth.ts              Configuración de Auth.js (Credentials)
 src/lib/auth.config.ts       Config "edge-safe" reutilizada por el middleware
+src/lib/impersonation.ts     Firma manual del JWT de sesión para "entrar como"
+src/lib/audit.ts             Registro de acciones del super admin
 src/lib/receipt.ts           Generación del PDF de recibo (pdf-lib)
 src/lib/labels.ts            Etiquetas compartidas para los enums del dominio
 src/app/(auth)/              Login y registro
 src/app/(dashboard)/         Dashboard, propiedades, reservas, contratos,
                              ventas, equipo, configuración (logo)
-src/app/(admin)/admin/       Panel de plataforma (SUPERADMIN)
+src/app/(admin)/admin/       Panel de plataforma (SUPERADMIN): inmobiliarias,
+                             alta manual, detalle/edición/borrado, auditoría
 src/app/api/                 Rutas API (propiedades, reservas, contratos,
                              ventas, gastos, pagos, recibos, documentos,
-                             fotos, usuarios, tenant/logo, admin/tenants)
+                             fotos, usuarios, tenant/logo, admin/tenants,
+                             admin/usuarios, admin/impersonar)
 ```
 
 ## Próximos pasos sugeridos
