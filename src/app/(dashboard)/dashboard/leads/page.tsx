@@ -34,12 +34,11 @@ export default async function LeadsPage() {
         </Link>
       </div>
 
-      <div className="overflow-x-auto pb-2">
-        <div className="grid grid-flow-col auto-cols-[250px] gap-4 min-w-full">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {leadPipelineStages.map((stage) => {
             const stageLeads = leads.filter((l) => l.stage === stage);
             return (
-              <div key={stage} className="bg-slate-100 dark:bg-slate-900 rounded-2xl p-3 flex flex-col gap-2.5">
+              <div key={stage} className="min-w-0 bg-slate-100 dark:bg-slate-900 rounded-2xl p-3 flex flex-col gap-2.5">
                 <div className="flex items-center justify-between px-1">
                   <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">
                     {leadStageLabels[stage]}
@@ -79,7 +78,6 @@ export default async function LeadsPage() {
             );
           })}
         </div>
-      </div>
 
       {perdidos > 0 && (
         <p className="text-xs text-slate-400 dark:text-slate-500">
