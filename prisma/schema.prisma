@@ -185,6 +185,12 @@ enum PropertyPhotoType {
   LLAVE
 }
 
+enum Plan {
+  BASICO
+  PRO
+  ENTERPRISE
+}
+
 // Cada Tenant representa una inmobiliaria / cliente de la plataforma.
 // El aislamiento de datos es lógico (tenantId en cada tabla); ver README
 // para la estrategia de escalado a bases de datos físicas separadas.
@@ -196,6 +202,12 @@ model Tenant {
   logoFileName String?
   logoFileData String? // base64 (mismo criterio MVP que el resto de los archivos)
   createdAt DateTime @default(now())
+
+  plan             Plan      @default(BASICO)
+  maxUsuarios      Int?      @default(3) // null = sin límite
+  maxPropiedades   Int?      @default(25) // null = sin límite
+  bonificado       Boolean   @default(false) // exenta de los límites del plan (cortesía)
+  bonificadoMotivo String?
 
   users         User[]
   properties    Property[]

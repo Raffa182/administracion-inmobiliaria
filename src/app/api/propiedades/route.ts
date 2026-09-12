@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { verificarLimiteTenant } from "@/lib/limites";
 
 const schema = z.object({
   address: z.string().min(3),
@@ -39,6 +40,11 @@ export async function POST(req: Request) {
 
   const data = parsed.data;
   const tenantId = session.user.tenantId;
+
+  const limite = await verificarLimiteTenant(tenantId, "propiedades");
+  if (!limite.ok) {
+    return NextResponse.json({ error: limite.error }, { status: 403 });
+  }
 
   let ownerId: string | undefined;
   if (data.ownerName) {

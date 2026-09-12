@@ -13,6 +13,9 @@ const actionLabels: Record<string, string> = {
   RESETEAR_PASSWORD: "Reseteó contraseña de",
   IMPERSONAR_INICIO: "Entró como",
   IMPERSONAR_FIN: "Volvió de",
+  EDITAR_PLAN_TENANT: "Editó el plan de",
+  BONIFICAR_TENANT: "Bonificó",
+  QUITAR_BONIFICACION: "Quitó la bonificación de",
 };
 
 export default async function AuditoriaPage() {

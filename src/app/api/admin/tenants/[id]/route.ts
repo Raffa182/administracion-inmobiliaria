@@ -12,6 +12,9 @@ const patchSchema = z.object({
     .min(2)
     .regex(/^[a-z0-9-]+$/, "El slug solo puede tener minúsculas, números y guiones")
     .optional(),
+  plan: z.enum(["BASICO", "PRO", "ENTERPRISE"]).optional(),
+  maxUsuarios: z.number().int().positive().nullable().optional(),
+  maxPropiedades: z.number().int().positive().nullable().optional(),
 });
 
 export async function PATCH(
@@ -46,6 +49,9 @@ export async function PATCH(
       active: parsed.data.active,
       name: parsed.data.name,
       slug: parsed.data.slug,
+      plan: parsed.data.plan,
+      maxUsuarios: parsed.data.maxUsuarios,
+      maxPropiedades: parsed.data.maxPropiedades,
     },
   });
 
@@ -59,6 +65,13 @@ export async function PATCH(
   ) {
     actions.push("EDITAR_TENANT");
   }
+  if (
+    (parsed.data.plan !== undefined && parsed.data.plan !== tenant.plan) ||
+    (parsed.data.maxUsuarios !== undefined && parsed.data.maxUsuarios !== tenant.maxUsuarios) ||
+    (parsed.data.maxPropiedades !== undefined && parsed.data.maxPropiedades !== tenant.maxPropiedades)
+  ) {
+    actions.push("EDITAR_PLAN_TENANT");
+  }
 
   for (const action of actions) {
     await logAdminAction({
@@ -71,6 +84,8 @@ export async function PATCH(
       details:
         action === "EDITAR_TENANT"
           ? `Antes: ${tenant.name} (${tenant.slug})`
+          : action === "EDITAR_PLAN_TENANT"
+          ? `Antes: plan ${tenant.plan}, máx. usuarios ${tenant.maxUsuarios ?? "sin límite"}, máx. propiedades ${tenant.maxPropiedades ?? "sin límite"}`
           : undefined,
     });
   }
@@ -96,6 +111,8 @@ export async function DELETE(
   // garantiza el orden de varios triggers ON DELETE CASCADE sobre el mismo padre).
   const where = { tenantId: tenant.id };
   await prisma.payment.deleteMany({ where });
+  await prisma.visit.deleteMany({ where });
+  await prisma.lead.deleteMany({ where });
   await prisma.personDocument.deleteMany({ where });
   await prisma.propertyDocument.deleteMany({ where });
   await prisma.propertyPhoto.deleteMany({ where });

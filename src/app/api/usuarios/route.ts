@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { verificarLimiteTenant } from "@/lib/limites";
 
 const schema = z.object({
   name: z.string().min(2),
@@ -29,6 +30,11 @@ export async function POST(req: Request) {
   });
   if (existing) {
     return NextResponse.json({ error: "Ya existe un usuario con ese email" }, { status: 409 });
+  }
+
+  const limite = await verificarLimiteTenant(session.user.tenantId, "usuarios");
+  if (!limite.ok) {
+    return NextResponse.json({ error: limite.error }, { status: 403 });
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
