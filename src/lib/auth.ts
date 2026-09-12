@@ -23,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const tenant = await prisma.tenant.findUnique({
           where: { slug: tenantSlug },
         });
-        if (!tenant) return null;
+        if (!tenant || !tenant.active) return null;
 
         const user = await prisma.user.findUnique({
           where: { tenantId_email: { tenantId: tenant.id, email } },

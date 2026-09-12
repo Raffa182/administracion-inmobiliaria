@@ -14,6 +14,7 @@ datasource db {
 enum Role {
   ADMIN
   AGENTE
+  SUPERADMIN
 }
 
 enum ContractStatus {
@@ -90,6 +91,9 @@ model Tenant {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
+  active    Boolean  @default(true)
+  logoFileName String?
+  logoFileData String? // base64 (mismo criterio MVP que el resto de los archivos)
   createdAt DateTime @default(now())
 
   users         User[]

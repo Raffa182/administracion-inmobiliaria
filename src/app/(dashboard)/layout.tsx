@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/sign-out-button";
 
 export default async function DashboardLayout({
@@ -9,14 +11,35 @@ export default async function DashboardLayout({
 }) {
   const session = await auth();
 
+  if (session?.user?.role === "SUPERADMIN") {
+    redirect("/admin");
+  }
+
+  const tenant = session?.user?.tenantId
+    ? await prisma.tenant.findUnique({
+        where: { id: session.user.tenantId },
+        select: { logoFileData: true },
+      })
+    : null;
+  const isAdmin = session?.user?.role === "ADMIN";
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-900 text-white font-semibold text-sm">
-              GI
-            </div>
+            {tenant?.logoFileData ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={tenant.logoFileData}
+                alt={session?.user?.tenantName ?? "Logo"}
+                className="h-9 w-9 rounded-lg object-cover border border-slate-200"
+              />
+            ) : (
+              <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-900 text-white font-semibold text-sm">
+                GI
+              </div>
+            )}
             <div>
               <p className="text-sm font-semibold text-slate-900 leading-tight">
                 {session?.user?.tenantName ?? "Gestión Inmobiliaria"}
@@ -52,6 +75,22 @@ export default async function DashboardLayout({
             >
               Propiedades
             </Link>
+            {isAdmin && (
+              <Link
+                href="/dashboard/equipo"
+                className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+              >
+                Equipo
+              </Link>
+            )}
+            {isAdmin && (
+              <Link
+                href="/dashboard/configuracion"
+                className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+              >
+                Configuración
+              </Link>
+            )}
           </nav>
 
           <SignOutButton />
