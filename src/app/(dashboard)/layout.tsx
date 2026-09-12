@@ -97,6 +97,18 @@ export default async function DashboardLayout({
               Propiedades
             </Link>
             <Link
+              href="/dashboard/leads"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Leads
+            </Link>
+            <Link
+              href="/dashboard/agenda"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Agenda
+            </Link>
+            <Link
               href="/dashboard/notificaciones"
               className="relative px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
             >

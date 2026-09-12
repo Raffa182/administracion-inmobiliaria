@@ -65,3 +65,31 @@ export const contractStatusStyles: Record<string, string> = {
   FINALIZADO: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800",
   RESCINDIDO: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
 };
+
+export const leadStageLabels: Record<string, string> = {
+  NUEVO: "Nuevo",
+  CONTACTADO: "Contactado",
+  VISITA_AGENDADA: "Visita agendada",
+  NEGOCIANDO: "Negociando",
+  CERRADO: "Cerrado",
+  PERDIDO: "Perdido",
+};
+
+// Etapas visibles en el pipeline (Perdido queda afuera del tablero, es un
+// estado final que se consulta aparte para no ensuciar el kanban activo).
+export const leadPipelineStages = [
+  "NUEVO",
+  "CONTACTADO",
+  "VISITA_AGENDADA",
+  "NEGOCIANDO",
+  "CERRADO",
+] as const;
+
+export const leadSourceLabels: Record<string, string> = {
+  WEB: "Web propia",
+  IDEALISTA: "Idealista",
+  FOTOCASA: "Fotocasa",
+  TELEFONO: "Teléfono",
+  REFERIDO: "Referido",
+  OTRO: "Otro",
+};

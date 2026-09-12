@@ -104,6 +104,68 @@ enum SaleStatus {
   CANCELADA
 }
 
+enum LeadStage {
+  NUEVO
+  CONTACTADO
+  VISITA_AGENDADA
+  NEGOCIANDO
+  CERRADO
+  PERDIDO
+}
+
+enum LeadSource {
+  WEB
+  IDEALISTA
+  FOTOCASA
+  TELEFONO
+  REFERIDO
+  OTRO
+}
+
+// Interesado en una propiedad, antes de convertirse en inquilino/comprador
+// (Reserva/Contrato/Venta). El pipeline es manual: el agente mueve el lead
+// de etapa a medida que avanza la conversación.
+model Lead {
+  id         String     @id @default(cuid())
+  tenantId   String
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name       String
+  phone      String?
+  email      String?
+  propertyId String?
+  property   Property?  @relation(fields: [propertyId], references: [id])
+  source     LeadSource @default(OTRO)
+  stage      LeadStage  @default(NUEVO)
+  notes      String?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  visits     Visit[]
+
+  @@index([tenantId])
+  @@index([stage])
+}
+
+// Visita agendada a una propiedad. Puede venir de un lead del CRM o
+// cargarse directamente (por ejemplo, alguien que llamó y no pasó por
+// el pipeline).
+model Visit {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  leadId          String?
+  lead            Lead?    @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  propertyId      String
+  property        Property @relation(fields: [propertyId], references: [id])
+  scheduledAt     DateTime
+  durationMinutes Int      @default(30)
+  notes           String?
+  createdAt       DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([scheduledAt])
+}
+
 // Documentación personal de un inquilino o comprador.
 enum PersonDocumentType {
   DNI
@@ -149,6 +211,8 @@ model Tenant {
   propertyDocs  PropertyDocument[]
   propertyPhotos PropertyPhoto[]
   portalLoginTokens PortalLoginToken[]
+  leads         Lead[]
+  visits        Visit[]
 }
 
 model User {
@@ -259,6 +323,8 @@ model Property {
   expenses      Expense[]
   documents     PropertyDocument[]
   photos        PropertyPhoto[]
+  leads         Lead[]
+  visits        Visit[]
 
   @@index([tenantId])
 }

@@ -111,6 +111,12 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   calculado al vuelo (sin email todavía).
 - **Resumen de negocio** (`/dashboard/resumen`): cobrado por mes, ocupación
   y accesos directos a lo que necesita atención.
+- **Leads** (`/dashboard/leads`): pipeline tipo kanban (Nuevo, Contactado,
+  Visita agendada, Negociando, Cerrado) para hacer seguimiento de interesados
+  antes de que exista una reserva o venta.
+- **Agenda de visitas** (`/dashboard/agenda`): calendario semanal de visitas a
+  propiedades, con o sin un lead asociado. Agendar una visita desde un lead
+  avanza su etapa automáticamente.
 - **Portal del inquilino/comprador** (`/portal/entrar`): login sin
   contraseña por magic link enviado por email. El inquilino/comprador ve
   su contrato o su venta y el estado de sus pagos, sin llamar a la
