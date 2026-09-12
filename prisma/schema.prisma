@@ -162,6 +162,15 @@ model User {
   emailVerified DateTime?
   createdAt    DateTime @default(now())
 
+  // Verificación en dos pasos (TOTP). twoFactorSecret se guarda ni bien se
+  // genera el QR pero twoFactorEnabled queda en false hasta confirmar el
+  // primer código; así un setup abandonado nunca llega a exigirse en el
+  // login. twoFactorBackupCodes es un JSON de hashes bcrypt, uno por código
+  // de respaldo sin usar (se van quitando de la lista al consumirse).
+  twoFactorSecret      String?
+  twoFactorEnabled     Boolean  @default(false)
+  twoFactorBackupCodes String?
+
   @@unique([tenantId, email])
   @@index([email])
 }

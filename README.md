@@ -100,8 +100,12 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   usuarios (`ADMIN`/`AGENTE`) de su propio tenant.
 - **Logo**: cada inmobiliaria puede subir su logo desde
   `/dashboard/configuracion`; se muestra en el encabezado del panel.
-- **Panel de plataforma** (`/admin`, rol `SUPERADMIN`): listado de todas las
-  inmobiliarias con métricas básicas y activación/desactivación de cuentas.
+- **Panel de plataforma** (`/admin`, rol `SUPERADMIN`): estado del sistema,
+  listado de todas las inmobiliarias con métricas básicas y
+  activación/desactivación de cuentas.
+- **Verificación en dos pasos** (`/admin/seguridad`, rol `SUPERADMIN`): TOTP
+  (Google Authenticator, Authy, etc.) con códigos de respaldo de un solo uso.
+  Opcional por ahora, solo para cuentas de super admin.
 - **Notificaciones internas** (`/dashboard/notificaciones`): contratos por
   vencer, pagos vencidos/próximos y reservas activas hace más de 15 días,
   calculado al vuelo (sin email todavía).
@@ -228,6 +232,7 @@ src/lib/auth.ts              Configuración de Auth.js (Credentials)
 src/lib/auth.config.ts       Config "edge-safe" reutilizada por el middleware
 src/lib/impersonation.ts     Firma manual del JWT de sesión para "entrar como"
 src/lib/audit.ts             Registro de acciones del super admin
+src/lib/two-factor.ts        TOTP y códigos de respaldo (verificación en dos pasos)
 src/lib/receipt.ts           Generación del PDF de recibo (pdf-lib)
 src/lib/labels.ts            Etiquetas compartidas para los enums del dominio
 src/app/(auth)/              Login (sin registro público, ver Multi-tenancy)
