@@ -14,8 +14,8 @@ export default async function AdminPage({
     where: q
       ? {
           OR: [
-            { name: { contains: q } },
-            { slug: { contains: q } },
+            { name: { contains: q, mode: "insensitive" } },
+            { slug: { contains: q, mode: "insensitive" } },
           ],
         }
       : undefined,
