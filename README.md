@@ -215,10 +215,61 @@ npm run build
 # reiniciar el proceso de la app (pm2 restart, systemctl restart, etc.)
 ```
 
-**Backups**: programar un `pg_dump` diario desde un cron en la LXC de
-Postgres, comprimido y copiado fuera de esa misma LXC (otro disco, otro
-host, o un bucket). Un backup que vive solo en la misma LXC que puede
-corromperse no cuenta como backup.
+**5. Backups automáticos** (full semanal + incrementales diarios, con
+[pgBackRest](https://pgbackrest.org/)):
+
+`pg_dump` por sí solo siempre hace un volcado completo; para tener un
+full los domingos y algo más liviano el resto de la semana hace falta
+backup físico + archivado de WAL, que es justamente lo que resuelve
+pgBackRest.
+
+```bash
+# Dentro de la LXC de Postgres (201 en este ejemplo):
+pct exec 201 -- apt install -y pgbackrest
+pct exec 201 -- mkdir -p /var/lib/pgbackrest
+pct exec 201 -- chown postgres:postgres /var/lib/pgbackrest
+
+pct exec 201 -- bash -c 'cat > /etc/pgbackrest/pgbackrest.conf <<EOF
+[global]
+repo1-path=/var/lib/pgbackrest
+repo1-retention-full=4
+start-fast=y
+
+[inmobiliaria]
+pg1-path=/var/lib/postgresql/16/main
+EOF'
+
+# Habilitar archivado de WAL en postgresql.conf:
+pct exec 201 -- bash -c "cat >> /etc/postgresql/16/main/postgresql.conf <<'EOF'
+
+# --- Backups (pgBackRest) ---
+archive_mode = on
+archive_command = 'pgbackrest --stanza=inmobiliaria archive-push %p'
+max_wal_senders = 3
+EOF"
+
+pct exec 201 -- systemctl restart postgresql
+pct exec 201 -- sudo -u postgres pgbackrest --stanza=inmobiliaria stanza-create
+pct exec 201 -- sudo -u postgres pgbackrest --stanza=inmobiliaria check
+pct exec 201 -- sudo -u postgres pgbackrest --stanza=inmobiliaria --type=full backup
+
+# Cron: full los domingos a las 3am, incremental el resto de los días
+pct exec 201 -- bash -c 'crontab -u postgres -l 2>/dev/null | { cat; \
+  echo "0 3 * * 0 pgbackrest --stanza=inmobiliaria --type=full backup"; \
+  echo "0 3 * * 1-6 pgbackrest --stanza=inmobiliaria --type=incr backup"; \
+} | crontab -u postgres -'
+```
+
+`repo1-retention-full=4` conserva los últimos 4 full (con sus
+incrementales asociados) y va purgando el resto automáticamente.
+
+Un backup que vive solo en la misma LXC que puede corromperse no cuenta
+como backup: se recomienda además copiar `/var/lib/pgbackrest` fuera de
+esa LXC (al host Proxmox, a otra LXC, o a un NAS) con un cron aparte.
+
+Para restaurar: `pgbackrest --stanza=inmobiliaria restore` (con el
+servicio de Postgres detenido) — probar el restore al menos una vez antes
+de necesitarlo de verdad.
 
 ## Estructura
 
