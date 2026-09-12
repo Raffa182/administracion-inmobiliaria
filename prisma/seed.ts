@@ -22,6 +22,8 @@ async function main() {
   await prisma.propertyDocument.deleteMany({ where: existing });
   await prisma.propertyPhoto.deleteMany({ where: existing });
   await prisma.expense.deleteMany({ where: existing });
+  await prisma.visit.deleteMany({ where: existing });
+  await prisma.lead.deleteMany({ where: existing });
   await prisma.reservation.deleteMany({ where: existing });
   await prisma.contract.deleteMany({ where: existing });
   await prisma.sale.deleteMany({ where: existing });
