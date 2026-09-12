@@ -100,6 +100,17 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   `/dashboard/configuracion`; se muestra en el encabezado del panel.
 - **Panel de plataforma** (`/admin`, rol `SUPERADMIN`): listado de todas las
   inmobiliarias con métricas básicas y activación/desactivación de cuentas.
+- **Notificaciones internas** (`/dashboard/notificaciones`): contratos por
+  vencer, pagos vencidos/próximos y reservas activas hace más de 15 días,
+  calculado al vuelo (sin email todavía).
+- **Resumen de negocio** (`/dashboard/resumen`): cobrado por mes, ocupación
+  y accesos directos a lo que necesita atención.
+- **Portal del inquilino/comprador** (`/portal/entrar`): login sin
+  contraseña por magic link enviado por email. El inquilino/comprador ve
+  su contrato o su venta y el estado de sus pagos, sin llamar a la
+  inmobiliaria. Requiere `APP_URL` configurado (ver más abajo) para que el
+  link del email apunte al lugar correcto; sin SMTP configurado, el link
+  se loguea en la consola del servidor en vez de enviarse por email.
 
 ## Desarrollo local
 
@@ -230,11 +241,13 @@ src/app/api/                 Rutas API (propiedades, reservas, contratos,
 
 ## Próximos pasos sugeridos
 
-- Verificación de email real (magic link/OTP) antes de habilitar la cuenta.
+- Elegir proveedor SMTP y configurar `SMTP_HOST`/`SMTP_USER`/`SMTP_PASS`
+  para que el link del portal y las futuras notificaciones por email
+  salgan de verdad (hoy se loguean en la consola del servidor).
+- Que el inquilino pueda subir el comprobante de su pago desde el portal
+  (hoy es de solo lectura).
 - Storage externo (S3/Blob) para los contratos digitalizados y recibos en
   vez de guardarlos como base64 en la base (válido para el MVP, no para
   volúmenes grandes).
-- Notificaciones automáticas de vencimiento de contrato y de actualización
-  de alquiler próxima.
 - Permisos más granulares dentro de `AGENTE` (hoy es todo-o-nada dentro del
   tenant); invitación por email en vez de alta directa con contraseña.

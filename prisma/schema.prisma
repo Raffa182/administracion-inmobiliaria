@@ -35,6 +35,27 @@ model AdminAuditLog {
   @@index([createdAt])
 }
 
+enum PortalPersonType {
+  RENTER
+  BUYER
+}
+
+// Token de acceso al portal del inquilino/comprador (login por magic link,
+// sin contraseña). Se guarda hasheado, de un solo uso, con vencimiento corto.
+model PortalLoginToken {
+  id         String           @id @default(cuid())
+  tenantId   String
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  personType PortalPersonType
+  personId   String
+  tokenHash  String           @unique
+  expiresAt  DateTime
+  usedAt     DateTime?
+  createdAt  DateTime         @default(now())
+
+  @@index([tenantId])
+}
+
 enum ContractStatus {
   ACTIVO
   FINALIZADO
@@ -127,6 +148,7 @@ model Tenant {
   personDocs    PersonDocument[]
   propertyDocs  PropertyDocument[]
   propertyPhotos PropertyPhoto[]
+  portalLoginTokens PortalLoginToken[]
 }
 
 model User {
