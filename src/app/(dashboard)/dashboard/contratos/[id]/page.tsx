@@ -38,7 +38,7 @@ export default async function ContratoDetailPage({
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/dashboard" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
+        <Link href="/dashboard/alquileres" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a alquileres
         </Link>
         <div className="mt-2 flex items-start justify-between">

@@ -109,8 +109,9 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
 - **Notificaciones internas** (`/dashboard/notificaciones`): contratos por
   vencer, pagos vencidos/próximos y reservas activas hace más de 15 días,
   calculado al vuelo (sin email todavía).
-- **Resumen de negocio** (`/dashboard/resumen`): cobrado por mes, ocupación
-  y accesos directos a lo que necesita atención.
+- **Home** (`/dashboard`): resumen de negocio — cobrado por mes, ocupación y
+  accesos directos a lo que necesita atención. El listado de contratos de
+  alquiler vive en `/dashboard/alquileres`.
 - **Leads** (`/dashboard/leads`): pipeline tipo kanban (Nuevo, Contactado,
   Visita agendada, Negociando, Cerrado) para hacer seguimiento de interesados
   antes de que exista una reserva o venta.

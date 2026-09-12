@@ -1,145 +1,91 @@
 import Link from "next/link";
+import { subMonths } from "date-fns";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formatEUR, formatDate, daysUntil } from "@/lib/format";
+import { getAlerts, countAlerts } from "@/lib/alerts";
+import { formatEUR, periodLabel } from "@/lib/format";
+import { IngresosChart } from "@/components/ingresos-chart";
 
-const statusStyles: Record<string, string> = {
-  ACTIVO: "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
-  FINALIZADO: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800",
-  RESCINDIDO: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
-};
+function periodOf(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
 
-export default async function DashboardPage() {
+export default async function ResumenPage() {
   const session = await auth();
   const tenantId = session!.user.tenantId;
+  const now = new Date();
 
-  const contracts = await prisma.contract.findMany({
-    where: { tenantId },
-    include: {
-      property: true,
-      renter: true,
-      payments: {
-        orderBy: { period: "desc" },
-        take: 1,
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const meses = Array.from({ length: 6 }, (_, i) => periodOf(subMonths(now, 5 - i)));
+  const currentPeriod = meses[meses.length - 1];
 
-  const activos = contracts.filter((c) => c.status === "ACTIVO").length;
-  const porVencer = contracts.filter(
-    (c) => c.status === "ACTIVO" && daysUntil(c.endDate) <= 60 && daysUntil(c.endDate) >= 0
-  ).length;
-  const pagosPendientes = contracts.filter(
-    (c) => c.payments[0]?.status === "PENDIENTE" || c.payments[0]?.status === "VENCIDO"
-  ).length;
+  const [cobros, propiedadesAlquiler, pagosPendientes, alerts] = await Promise.all([
+    prisma.payment.groupBy({
+      by: ["period"],
+      where: { tenantId, status: "PAGADO", period: { in: meses } },
+      _sum: { amount: true },
+    }),
+    prisma.property.findMany({
+      where: { tenantId, listingType: { in: ["ALQUILER", "ALQUILER_Y_VENTA"] } },
+      include: { contracts: { where: { status: "ACTIVO" }, take: 1 } },
+    }),
+    prisma.payment.count({
+      where: { tenantId, status: { in: ["PENDIENTE", "VENCIDO"] } },
+    }),
+    getAlerts(tenantId),
+  ]);
+
+  const cobrosPorPeriodo = new Map(cobros.map((c) => [c.period, c._sum.amount ?? 0]));
+  const chartData = meses.map((m) => ({
+    label: periodLabel(m).split(" ")[0],
+    amount: cobrosPorPeriodo.get(m) ?? 0,
+    current: m === currentPeriod,
+  }));
+  const ingresosEsteMes = cobrosPorPeriodo.get(currentPeriod) ?? 0;
+
+  const ocupadas = propiedadesAlquiler.filter((p) => p.contracts.length > 0).length;
+  const ocupacion =
+    propiedadesAlquiler.length > 0
+      ? Math.round((ocupadas / propiedadesAlquiler.length) * 100)
+      : null;
+
+  const totalAlertas = countAlerts(alerts);
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Alquileres</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Contratos, vencimientos y estado de pago de tu cartera
-          </p>
-        </div>
-        <Link
-          href="/dashboard/contratos/nuevo"
-          className="rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium px-4 py-2 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
-        >
-          + Nuevo contrato
+      <div>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Home</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Cómo viene el negocio este mes</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Cobrado este mes" value={formatEUR(ingresosEsteMes)} />
+        <StatCard
+          label="Ocupación"
+          value={ocupacion === null ? "—" : `${ocupacion}%`}
+          hint={
+            propiedadesAlquiler.length > 0
+              ? `${ocupadas} de ${propiedadesAlquiler.length} en alquiler`
+              : "Sin propiedades en alquiler"
+          }
+        />
+        <StatCard
+          label="Pagos pendientes"
+          value={pagosPendientes}
+          accent={pagosPendientes > 0 ? "amber" : undefined}
+        />
+        <Link href="/dashboard/notificaciones" className="block">
+          <StatCard
+            label="Necesita atención"
+            value={totalAlertas}
+            accent={totalAlertas > 0 ? "red" : undefined}
+            hint="Ver notificaciones"
+          />
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard label="Contratos activos" value={activos} />
-        <StatCard label="Por vencer (60 días)" value={porVencer} accent="amber" />
-        <StatCard label="Pagos pendientes" value={pagosPendientes} accent="red" />
-      </div>
-
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
-              <th className="px-5 py-3 font-medium">Propiedad</th>
-              <th className="px-5 py-3 font-medium">Inquilino</th>
-              <th className="px-5 py-3 font-medium">Contrato</th>
-              <th className="px-5 py-3 font-medium">Próx. actualización</th>
-              <th className="px-5 py-3 font-medium">Alquiler</th>
-              <th className="px-5 py-3 font-medium">Último pago</th>
-              <th className="px-5 py-3 font-medium">Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {contracts.map((c) => {
-              const lastPayment = c.payments[0];
-              const daysToEnd = daysUntil(c.endDate);
-              return (
-                <tr
-                  key={c.id}
-                  className="border-b border-slate-100 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-                >
-                  <td className="px-5 py-4">
-                    <Link href={`/dashboard/contratos/${c.id}`} className="block">
-                      <p className="font-medium text-slate-900 dark:text-slate-50">{c.property.address}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{c.property.type}</p>
-                    </Link>
-                  </td>
-                  <td className="px-5 py-4 text-slate-700 dark:text-slate-300">{c.renter.name}</td>
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-400">
-                    <p>{formatDate(c.startDate)} → {formatDate(c.endDate)}</p>
-                    {c.status === "ACTIVO" && daysToEnd <= 60 && (
-                      <p className={`text-xs mt-0.5 ${daysToEnd < 0 ? "text-red-600 dark:text-red-400" : "text-amber-600 dark:text-amber-400"}`}>
-                        {daysToEnd < 0
-                          ? `Vencido hace ${Math.abs(daysToEnd)} días`
-                          : `Vence en ${daysToEnd} días`}
-                      </p>
-                    )}
-                  </td>
-                  <td className="px-5 py-4 text-slate-600 dark:text-slate-400">
-                    {c.nextAdjustmentDate ? formatDate(c.nextAdjustmentDate) : "—"}
-                  </td>
-                  <td className="px-5 py-4 font-medium text-slate-900 dark:text-slate-50">
-                    {formatEUR(c.rentAmount)}
-                  </td>
-                  <td className="px-5 py-4">
-                    {lastPayment ? (
-                      <span
-                        className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${
-                          lastPayment.status === "PAGADO"
-                            ? "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800"
-                            : "bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800"
-                        }`}
-                      >
-                        {lastPayment.status === "PAGADO" ? "Pagado" : "Pendiente"} ·{" "}
-                        {lastPayment.period}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-slate-400 dark:text-slate-500">Sin pagos</span>
-                    )}
-                  </td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${statusStyles[c.status]}`}
-                    >
-                      {c.status}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
-            {contracts.length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-5 py-10 text-center text-slate-400 dark:text-slate-500">
-                  Todavía no cargaste ningún contrato.{" "}
-                  <Link href="/dashboard/contratos/nuevo" className="text-slate-900 dark:text-slate-50 underline">
-                    Crear el primero
-                  </Link>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Cobrado por mes</h2>
+        <IngresosChart data={chartData} />
       </div>
     </div>
   );
@@ -148,22 +94,21 @@ export default async function DashboardPage() {
 function StatCard({
   label,
   value,
+  hint,
   accent,
 }: {
   label: string;
-  value: number;
+  value: string | number;
+  hint?: string;
   accent?: "amber" | "red";
 }) {
   const color =
-    accent === "amber"
-      ? "text-amber-600 dark:text-amber-400"
-      : accent === "red"
-      ? "text-red-600 dark:text-red-400"
-      : "text-slate-900 dark:text-slate-50";
+    accent === "amber" ? "text-amber-600 dark:text-amber-400" : accent === "red" ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-50";
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 h-full">
       <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
       <p className={`text-3xl font-semibold mt-1 ${color}`}>{value}</p>
+      {hint && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{hint}</p>}
     </div>
   );
 }
