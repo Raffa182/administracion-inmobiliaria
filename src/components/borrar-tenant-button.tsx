@@ -34,11 +34,11 @@ export function BorrarTenantButton({ tenantId, slug }: { tenantId: string; slug:
       <button
         onClick={onClick}
         disabled={loading}
-        className="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-60"
+        className="text-sm font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-400 disabled:opacity-60"
       >
         {loading ? "Borrando…" : "Borrar inmobiliaria"}
       </button>
-      {error && <p className="text-xs text-red-600 mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{error}</p>}
     </div>
   );
 }

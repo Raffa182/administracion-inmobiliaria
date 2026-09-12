@@ -56,16 +56,16 @@ export function LogoUploadForm() {
         type="file"
         accept="image/*"
         required
-        className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm file:mr-2 file:rounded-md file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+        className="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-1.5 text-sm file:mr-2 file:rounded-md file:border-0 file:bg-slate-100 file:px-2 file:py-1 file:text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
       />
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-slate-900 text-white text-sm font-medium px-4 py-2 hover:bg-slate-800 transition disabled:opacity-60"
+        className="rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium px-4 py-2 hover:bg-slate-800 dark:hover:bg-slate-200 transition disabled:opacity-60"
       >
         {loading ? "Subiendo…" : "Guardar logo"}
       </button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
     </form>
   );
 }

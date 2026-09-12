@@ -26,17 +26,17 @@ export default async function ReservaDetailPage({
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/dashboard/reservas" className="text-sm text-slate-500 hover:text-slate-900">
+        <Link href="/dashboard/reservas" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a reservas
         </Link>
         <div className="mt-2 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
               <Link href={`/dashboard/propiedades/${reservation.propertyId}`} className="hover:underline">
                 {reservation.property.address}
               </Link>
             </h1>
-            <p className="text-sm text-slate-500 mt-1">Inquilino: {reservation.renter.name}</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Inquilino: {reservation.renter.name}</p>
           </div>
           <span
             className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${reservationStatusStyles[reservation.status]}`}
@@ -54,7 +54,7 @@ export default async function ReservaDetailPage({
               <Info label="Seña / honorarios" value={formatEUR(reservation.amount)} />
             </dl>
             {reservation.notes && (
-              <p className="mt-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
+              <p className="mt-4 text-sm text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-4">
                 {reservation.notes}
               </p>
             )}
@@ -72,13 +72,13 @@ export default async function ReservaDetailPage({
             {reservation.status === "CONVERTIDA" && reservation.contractId && (
               <Link
                 href={`/dashboard/contratos/${reservation.contractId}`}
-                className="block w-full text-center rounded-lg bg-slate-900 text-white text-sm font-medium py-2.5 hover:bg-slate-800 transition"
+                className="block w-full text-center rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium py-2.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
               >
                 Ver contrato
               </Link>
             )}
             {reservation.status === "CANCELADA" && (
-              <p className="text-sm text-slate-400">Esta reserva fue cancelada.</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500">Esta reserva fue cancelada.</p>
             )}
           </Card>
         </div>
@@ -89,8 +89,8 @@ export default async function ReservaDetailPage({
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h2 className="text-sm font-semibold text-slate-900 mb-4">{title}</h2>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">{title}</h2>
       {children}
     </div>
   );
@@ -99,8 +99,8 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-slate-500">{label}</dt>
-      <dd className="mt-0.5 font-medium text-slate-900">{value}</dd>
+      <dt className="text-xs text-slate-500 dark:text-slate-400">{label}</dt>
+      <dd className="mt-0.5 font-medium text-slate-900 dark:text-slate-50">{value}</dd>
     </div>
   );
 }

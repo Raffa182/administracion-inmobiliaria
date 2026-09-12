@@ -12,8 +12,8 @@ export default async function NotificacionesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Notificaciones</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Notificaciones</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           {total === 0
             ? "No hay nada que requiera tu atención hoy."
             : `${total} cosa${total === 1 ? "" : "s"} para revisar.`}
@@ -98,9 +98,9 @@ function AlertSection({
   const hasItems = items.some(Boolean);
   return (
     <section>
-      <h2 className="text-sm font-semibold text-slate-900 mb-3">{title}</h2>
-      <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100">
-        {hasItems ? children : <p className="px-5 py-4 text-sm text-slate-400">{emptyText}</p>}
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-3">{title}</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
+        {hasItems ? children : <p className="px-5 py-4 text-sm text-slate-400 dark:text-slate-500">{emptyText}</p>}
       </div>
     </section>
   );
@@ -122,15 +122,15 @@ function AlertRow({
   return (
     <Link
       href={href}
-      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50"
+      className="flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-800"
     >
       <div>
-        <p className="font-medium text-slate-900">{title}</p>
-        <p className="text-xs text-slate-500">{subtitle}</p>
+        <p className="font-medium text-slate-900 dark:text-slate-50">{title}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
       </div>
       <p
         className={`text-sm font-medium text-right shrink-0 ${
-          accent === "red" ? "text-red-600" : "text-amber-600"
+          accent === "red" ? "text-red-600 dark:text-red-400" : "text-amber-600 dark:text-amber-400"
         }`}
       >
         {detail}

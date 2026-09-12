@@ -29,8 +29,8 @@ export default async function NuevoContratoPage({
 
   return (
     <div className="max-w-3xl">
-      <h1 className="text-2xl font-semibold text-slate-900">Nuevo contrato de alquiler</h1>
-      <p className="text-sm text-slate-500 mt-1">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Nuevo contrato de alquiler</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
         Carga la propiedad, el inquilino y las condiciones del contrato
       </p>
 

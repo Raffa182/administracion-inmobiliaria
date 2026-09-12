@@ -17,7 +17,7 @@ export function AdminSearchBox() {
         router.replace(`/admin?${params.toString()}`);
       }}
       placeholder="Buscar por nombre o slug…"
-      className="w-full sm:w-64 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+      className="w-full sm:w-64 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
     />
   );
 }

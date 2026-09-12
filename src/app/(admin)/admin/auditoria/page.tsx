@@ -24,19 +24,19 @@ export default async function AuditoriaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin" className="text-sm text-slate-500 hover:text-slate-900">
+        <Link href="/admin" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a inmobiliarias
         </Link>
-        <h1 className="text-2xl font-semibold text-slate-900 mt-2">Auditoría</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50 mt-2">Auditoría</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Últimas {logs.length} acciones de super admins sobre las inmobiliarias.
         </p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl divide-y divide-slate-100">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
         {logs.map((log) => (
           <div key={log.id} className="px-5 py-3 text-sm">
-            <p className="text-slate-900">
+            <p className="text-slate-900 dark:text-slate-50">
               <span className="font-medium">{log.actorEmail}</span>{" "}
               {actionLabels[log.action] ?? log.action}{" "}
               {log.targetTenantName ? (
@@ -46,12 +46,12 @@ export default async function AuditoriaPage() {
               ) : null}
               {log.targetUserEmail ? <> · {log.targetUserEmail}</> : null}
             </p>
-            {log.details && <p className="text-xs text-slate-500 mt-0.5">{log.details}</p>}
-            <p className="text-xs text-slate-400 mt-0.5">{formatDate(log.createdAt)}</p>
+            {log.details && <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{log.details}</p>}
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{formatDate(log.createdAt)}</p>
           </div>
         ))}
         {logs.length === 0 && (
-          <p className="text-sm text-slate-400 px-5 py-4">Todavía no hay acciones registradas.</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 px-5 py-4">Todavía no hay acciones registradas.</p>
         )}
       </div>
     </div>

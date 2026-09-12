@@ -31,11 +31,11 @@ export function EliminarUsuarioButton({ userId }: { userId: string }) {
       <button
         onClick={onClick}
         disabled={loading}
-        className="text-xs font-medium text-red-600 hover:text-red-700 disabled:opacity-60"
+        className="text-xs font-medium text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-400 disabled:opacity-60"
       >
         {loading ? "Eliminando…" : "Eliminar"}
       </button>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
     </div>
   );
 }

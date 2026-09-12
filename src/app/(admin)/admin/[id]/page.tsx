@@ -38,20 +38,20 @@ export default async function AdminTenantDetailPage({
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin" className="text-sm text-slate-500 hover:text-slate-900">
+        <Link href="/admin" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a inmobiliarias
         </Link>
         <div className="mt-2 flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
               {tenant.name}
               {!tenant.active && (
-                <span className="ml-2 inline-flex items-center rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700">
+                <span className="ml-2 inline-flex items-center rounded-full border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-300">
                   Inactiva
                 </span>
               )}
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {tenant.slug} · alta {formatDate(tenant.createdAt)}
             </p>
           </div>
@@ -66,22 +66,22 @@ export default async function AdminTenantDetailPage({
         <StatCard label="Ventas" value={tenant._count.sales} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Datos de la inmobiliaria</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Datos de la inmobiliaria</h2>
         <EditarTenantForm tenantId={tenant.id} name={tenant.name} slug={tenant.slug} />
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Usuarios</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Usuarios</h2>
         <div className="space-y-2">
           {tenant.users.map((u) => (
             <div
               key={u.id}
-              className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2"
+              className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2"
             >
               <div>
-                <p className="text-sm font-medium text-slate-900">{u.name}</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-50">{u.name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {u.email} · {roleLabels[u.role] ?? u.role} · alta {formatDate(u.createdAt)}
                 </p>
               </div>
@@ -92,25 +92,25 @@ export default async function AdminTenantDetailPage({
             </div>
           ))}
           {tenant.users.length === 0 && (
-            <p className="text-sm text-slate-400">Sin usuarios.</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500">Sin usuarios.</p>
           )}
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Soporte</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Soporte</h2>
         {hasAdmin ? (
           <ImpersonarButton tenantId={tenant.id} disabled={!tenant.active} />
         ) : (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-400 dark:text-slate-500">
             No tiene un usuario ADMIN para entrar en su nombre.
           </p>
         )}
       </div>
 
-      <div className="bg-white border border-red-100 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-red-700 mb-2">Zona de riesgo</h2>
-        <p className="text-xs text-slate-500 mb-3">
+      <div className="bg-white dark:bg-slate-900 border border-red-100 dark:border-red-900 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-red-700 dark:text-red-300 mb-2">Zona de riesgo</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
           Borra la inmobiliaria y todos sus datos (propiedades, contratos, ventas, documentos,
           usuarios). No se puede deshacer.
         </p>
@@ -122,9 +122,9 @@ export default async function AdminTenantDetailPage({
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-4">
-      <p className="text-2xl font-semibold text-slate-900">{value}</p>
-      <p className="text-xs text-slate-500 mt-1">{label}</p>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+      <p className="text-2xl font-semibold text-slate-900 dark:text-slate-50">{value}</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{label}</p>
     </div>
   );
 }

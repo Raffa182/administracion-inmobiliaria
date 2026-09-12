@@ -83,7 +83,7 @@ export function ContratoForm({
       <Section title="Propiedad">
         {lockedProperty ? (
           <div>
-            <p className="text-sm font-medium text-slate-900">{lockedProperty.address}</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-slate-50">{lockedProperty.address}</p>
             <input type="hidden" name="propertyId" value={lockedProperty.id} />
           </div>
         ) : (
@@ -104,7 +104,7 @@ export function ContratoForm({
       <Section title="Inquilino">
         {lockedRenter ? (
           <div>
-            <p className="text-sm font-medium text-slate-900">{lockedRenter.name}</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-slate-50">{lockedRenter.name}</p>
             <input type="hidden" name="renterId" value={lockedRenter.id} />
           </div>
         ) : (
@@ -127,11 +127,11 @@ export function ContratoForm({
       <Section title="Condiciones del contrato">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Tipo de contrato</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tipo de contrato</label>
             <select
               name="contractType"
               defaultValue="LARGA_TEMPORADA"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+              className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
             >
               <option value="LARGA_TEMPORADA">Larga temporada</option>
               <option value="TEMPORADA">Temporada</option>
@@ -153,17 +153,17 @@ export function ContratoForm({
       </Section>
 
       <Section title="Contrato digitalizado">
-        <label className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-8 text-center cursor-pointer hover:bg-slate-100 transition">
+        <label className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 px-4 py-8 text-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           <input type="file" accept="application/pdf,image/*" className="hidden" onChange={onFileChange} />
-          <p className="text-sm font-medium text-slate-700">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
             {fileName ?? "Subir contrato firmado (PDF o imagen)"}
           </p>
-          <p className="text-xs text-slate-400 mt-1">Opcional, se puede agregar después</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Opcional, se puede agregar después</p>
         </label>
       </Section>
 
       {error && (
-        <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+        <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950 border border-red-100 dark:border-red-900 rounded-lg px-3 py-2">
           {error}
         </p>
       )}
@@ -172,7 +172,7 @@ export function ContratoForm({
         <button
           type="submit"
           disabled={loading}
-          className="rounded-lg bg-slate-900 text-white text-sm font-medium px-5 py-2.5 hover:bg-slate-800 transition disabled:opacity-60"
+          className="rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium px-5 py-2.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition disabled:opacity-60"
         >
           {loading ? "Guardando…" : "Crear contrato"}
         </button>
@@ -183,8 +183,8 @@ export function ContratoForm({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h2 className="text-sm font-semibold text-slate-900 mb-4">{title}</h2>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">{title}</h2>
       {children}
     </div>
   );
@@ -209,7 +209,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
+      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{label}</label>
       <input
         name={name}
         type={type}
@@ -217,7 +217,7 @@ function Field({
         placeholder={placeholder}
         defaultValue={defaultValue}
         min={min}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+        className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
       />
     </div>
   );

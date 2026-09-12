@@ -25,28 +25,28 @@ export default async function EquipoPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Equipo</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Equipo</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Gestiona quiénes pueden acceder a {session.user.tenantName}.
         </p>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Usuarios</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Usuarios</h2>
         <div className="space-y-2">
           {users.map((u) => (
             <div
               key={u.id}
-              className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2"
+              className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2"
             >
               <div>
-                <p className="text-sm font-medium text-slate-900">
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                   {u.name}
                   {u.id === session.user.id && (
-                    <span className="ml-2 text-xs text-slate-400">(tú)</span>
+                    <span className="ml-2 text-xs text-slate-400 dark:text-slate-500">(tú)</span>
                   )}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {u.email} · {roleLabels[u.role] ?? u.role} · alta {formatDate(u.createdAt)}
                 </p>
               </div>
@@ -56,8 +56,8 @@ export default async function EquipoPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Agregar usuario</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Agregar usuario</h2>
         <UsuarioForm />
       </div>
     </div>

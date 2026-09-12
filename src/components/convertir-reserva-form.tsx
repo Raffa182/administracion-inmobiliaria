@@ -44,7 +44,7 @@ export function ConvertirReservaForm({ reservationId }: { reservationId: string 
     return (
       <button
         onClick={() => setOpen(true)}
-        className="w-full rounded-lg bg-slate-900 text-white text-sm font-medium py-2.5 hover:bg-slate-800 transition"
+        className="w-full rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium py-2.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition"
       >
         Convertir en contrato
       </button>
@@ -54,11 +54,11 @@ export function ConvertirReservaForm({ reservationId }: { reservationId: string 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Tipo de contrato</label>
+        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Tipo de contrato</label>
         <select
           name="contractType"
           defaultValue="LARGA_TEMPORADA"
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+          className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
         >
           <option value="LARGA_TEMPORADA">Larga temporada</option>
           <option value="TEMPORADA">Temporada</option>
@@ -66,52 +66,52 @@ export function ConvertirReservaForm({ reservationId }: { reservationId: string 
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Inicio</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Inicio</label>
           <input
             name="startDate"
             type="date"
             required
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Fin</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Fin</label>
           <input
             name="endDate"
             type="date"
             required
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
           />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Alquiler (€)</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Alquiler (€)</label>
           <input
             name="rentAmount"
             type="number"
             min={0}
             required
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Actualiza cada (meses)</label>
+          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Actualiza cada (meses)</label>
           <input
             name="adjustmentFrequencyMonths"
             type="number"
             min={1}
             defaultValue={12}
             required
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+            className="w-full rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
           />
         </div>
       </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-red-600 dark:text-red-400">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-slate-900 text-white text-sm font-medium py-2.5 hover:bg-slate-800 transition disabled:opacity-60"
+        className="w-full rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium py-2.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition disabled:opacity-60"
       >
         {loading ? "Creando contrato…" : "Confirmar y crear contrato"}
       </button>
