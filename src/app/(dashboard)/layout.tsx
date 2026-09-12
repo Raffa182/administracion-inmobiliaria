@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getAlerts, countAlerts } from "@/lib/alerts";
 import { SignOutButton } from "@/components/sign-out-button";
 import { VolverAAdminButton } from "@/components/volver-a-admin-button";
 
@@ -23,6 +24,9 @@ export default async function DashboardLayout({
       })
     : null;
   const isAdmin = session?.user?.role === "ADMIN";
+  const alertCount = session?.user?.tenantId
+    ? countAlerts(await getAlerts(session.user.tenantId))
+    : 0;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -84,6 +88,17 @@ export default async function DashboardLayout({
               className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
             >
               Propiedades
+            </Link>
+            <Link
+              href="/dashboard/notificaciones"
+              className="relative px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+            >
+              Notificaciones
+              {alertCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
+                  {alertCount > 9 ? "9+" : alertCount}
+                </span>
+              )}
             </Link>
             {isAdmin && (
               <Link
