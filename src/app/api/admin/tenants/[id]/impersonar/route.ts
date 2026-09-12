@@ -65,7 +65,11 @@ export async function POST(
     targetUserEmail: targetUser.email,
   });
 
-  const res = NextResponse.redirect(new URL("/dashboard", req.url));
+  // Devolvemos JSON (no un redirect server-side): construir la URL absoluta
+  // acá depende de los headers x-forwarded-*, que detrás de un proxy/túnel
+  // (Cloudflare) pueden traer un host/proto incorrecto. Dejamos que el
+  // propio navegador navegue a /dashboard con router.push en el cliente.
+  const res = NextResponse.json({ ok: true });
   res.cookies.set(cookieName, token, {
     httpOnly: true,
     sameSite: "lax",

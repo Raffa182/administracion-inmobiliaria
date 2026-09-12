@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   const origin = session?.user?.adminOrigin;
   if (!origin) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.json({ error: "No estás en modo impersonación" }, { status: 400 });
   }
 
   const cookieName = getSessionCookieName(req);
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
     targetUserEmail: session.user.email ?? undefined,
   });
 
-  const res = NextResponse.redirect(new URL("/admin", req.url));
+  const res = NextResponse.json({ ok: true });
   res.cookies.set(cookieName, token, {
     httpOnly: true,
     sameSite: "lax",

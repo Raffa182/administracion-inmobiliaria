@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SignOutButton } from "@/components/sign-out-button";
+import { VolverAAdminButton } from "@/components/volver-a-admin-button";
 
 export default async function DashboardLayout({
   children,
@@ -26,22 +27,13 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen flex flex-col">
       {session?.user?.impersonating && (
-        <form
-          action="/api/admin/impersonar/salir"
-          method="POST"
-          className="bg-amber-500 text-white text-sm px-4 py-2 flex items-center justify-between gap-3"
-        >
+        <div className="bg-amber-500 text-white text-sm px-4 py-2 flex items-center justify-between gap-3">
           <span>
             Estás viendo como <b>{session.user.tenantName}</b> (modo soporte, entraste desde
             Super Admin).
           </span>
-          <button
-            type="submit"
-            className="shrink-0 rounded-lg bg-white/20 hover:bg-white/30 px-3 py-1 font-medium transition"
-          >
-            Volver a admin
-          </button>
-        </form>
+          <VolverAAdminButton />
+        </div>
       )}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
