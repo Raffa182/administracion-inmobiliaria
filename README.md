@@ -24,8 +24,10 @@ tablas tienen `tenantId` y cada consulta lo filtra explícitamente (ver
 - El login pide **inmobiliaria (slug) + email + contraseña**: el email solo
   es único *dentro* de cada inmobiliaria, así que dos clientes distintos
   pueden tener usuarios con el mismo email sin pisarse.
-- `/registro` da de alta una inmobiliaria nueva (tenant) con su primer
-  usuario admin.
+- No hay alta pública de inmobiliarias a propósito: solo el `SUPERADMIN`
+  puede crear una, desde `/admin/nueva`. Si el registro fuera público,
+  cualquiera con el link podría usar el servicio sin pasar por la
+  inmobiliaria (y sin pagar).
 - Para escalar a **bases de datos físicas separadas por cliente** (lo
   habitual en instalaciones grandes), el siguiente paso natural es resolver
   el `DATABASE_URL` por tenant (por subdominio, por ejemplo) en
@@ -228,7 +230,7 @@ src/lib/impersonation.ts     Firma manual del JWT de sesión para "entrar como"
 src/lib/audit.ts             Registro de acciones del super admin
 src/lib/receipt.ts           Generación del PDF de recibo (pdf-lib)
 src/lib/labels.ts            Etiquetas compartidas para los enums del dominio
-src/app/(auth)/              Login y registro
+src/app/(auth)/              Login (sin registro público, ver Multi-tenancy)
 src/app/(dashboard)/         Dashboard, propiedades, reservas, contratos,
                              ventas, equipo, configuración (logo)
 src/app/(admin)/admin/       Panel de plataforma (SUPERADMIN): inmobiliarias,
