@@ -103,6 +103,12 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
 - **Panel de plataforma** (`/admin`, rol `SUPERADMIN`): estado del sistema,
   listado de todas las inmobiliarias con métricas básicas y
   activación/desactivación de cuentas.
+- **Planes y límites de uso**: cada inmobiliaria tiene un plan (Básico/Pro/
+  Enterprise) y un máximo de usuarios/propiedades configurable desde
+  `/admin/[id]`. Al llegar al límite, la creación de usuarios o propiedades
+  se bloquea con un aviso claro. El super admin puede **bonificar** una
+  cuenta (con motivo opcional) para eximirla de esos límites mientras dure
+  la cortesía, sin tocar su plan.
 - **Verificación en dos pasos** (`/admin/seguridad`, rol `SUPERADMIN`): TOTP
   (Google Authenticator, Authy, etc.) con códigos de respaldo de un solo uso.
   Opcional por ahora, solo para cuentas de super admin.

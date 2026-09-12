@@ -2,12 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
+import { planLabels } from "@/lib/planes";
 import { EditarTenantForm } from "@/components/editar-tenant-form";
 import { BorrarTenantButton } from "@/components/borrar-tenant-button";
 import { ResetPasswordForm } from "@/components/reset-password-form";
 import { EditarEmailForm } from "@/components/editar-email-form";
 import { ImpersonarButton } from "@/components/impersonar-button";
 import { ToggleTenantActiveButton } from "@/components/toggle-tenant-active-button";
+import { BonificarTenantButton } from "@/components/bonificar-tenant-button";
+import { EditarPlanForm } from "@/components/editar-plan-form";
 
 const roleLabels: Record<string, string> = {
   ADMIN: "Administrador",
@@ -50,12 +53,25 @@ export default async function AdminTenantDetailPage({
                   Inactiva
                 </span>
               )}
+              {tenant.bonificado && (
+                <span className="ml-2 inline-flex items-center rounded-full border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                  Bonificada
+                </span>
+              )}
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              {tenant.slug} · alta {formatDate(tenant.createdAt)}
+              {tenant.slug} · plan {planLabels[tenant.plan]} · alta {formatDate(tenant.createdAt)}
             </p>
+            {tenant.bonificado && tenant.bonificadoMotivo && (
+              <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                Motivo: {tenant.bonificadoMotivo}
+              </p>
+            )}
           </div>
-          <ToggleTenantActiveButton tenantId={tenant.id} active={tenant.active} />
+          <div className="flex items-center gap-2">
+            <BonificarTenantButton tenantId={tenant.id} bonificado={tenant.bonificado} />
+            <ToggleTenantActiveButton tenantId={tenant.id} active={tenant.active} />
+          </div>
         </div>
       </div>
 
@@ -69,6 +85,21 @@ export default async function AdminTenantDetailPage({
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Datos de la inmobiliaria</h2>
         <EditarTenantForm tenantId={tenant.id} name={tenant.name} slug={tenant.slug} />
+      </div>
+
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-1">Plan y límites de uso</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+          {tenant.users.length} de {tenant.maxUsuarios ?? "∞"} usuarios · {tenant._count.properties} de{" "}
+          {tenant.maxPropiedades ?? "∞"} propiedades
+        </p>
+        <EditarPlanForm
+          tenantId={tenant.id}
+          plan={tenant.plan}
+          maxUsuarios={tenant.maxUsuarios}
+          maxPropiedades={tenant.maxPropiedades}
+          bonificado={tenant.bonificado}
+        />
       </div>
 
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">

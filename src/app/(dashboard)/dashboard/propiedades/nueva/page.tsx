@@ -16,7 +16,6 @@ export default function NuevaPropiedadPage() {
     const form = new FormData(e.currentTarget);
     const payload = {
       address: form.get("address"),
-      unit: form.get("unit"),
       city: form.get("city"),
       type: form.get("type"),
       listingType: form.get("listingType"),
@@ -45,7 +44,8 @@ export default function NuevaPropiedadPage() {
     setLoading(false);
 
     if (!res.ok) {
-      setError("No se pudo crear la propiedad. Revisa los datos.");
+      const body = await res.json().catch(() => null);
+      setError(body?.error ?? "No se pudo crear la propiedad. Revisa los datos.");
       return;
     }
 

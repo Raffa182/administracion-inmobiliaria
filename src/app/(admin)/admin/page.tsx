@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
+import { planLabels } from "@/lib/planes";
 import { AdminSearchBox } from "@/components/admin-search-box";
 import { SystemStatus } from "@/components/system-status";
 
@@ -106,9 +107,14 @@ export default async function AdminPage({
                       Inactiva
                     </span>
                   )}
+                  {tenant.bonificado && (
+                    <span className="ml-2 inline-flex items-center rounded-full border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                      Bonificada
+                    </span>
+                  )}
                 </p>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  {tenant.slug} · alta {formatDate(tenant.createdAt)}
+                  {tenant.slug} · plan {planLabels[tenant.plan]} · alta {formatDate(tenant.createdAt)}
                 </p>
               </div>
             </div>
