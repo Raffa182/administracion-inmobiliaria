@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import packageJson from "../../../../../package.json";
+import packageJson from "../../package.json";
 
 function formatUptime(seconds: number) {
   const d = Math.floor(seconds / 86400);
@@ -17,7 +16,7 @@ function formatMB(bytes: number) {
   return `${Math.round(bytes / 1024 / 1024)} MB`;
 }
 
-export default async function EstadoPage() {
+export async function SystemStatus() {
   const dbStart = Date.now();
   let dbOk = true;
   try {
@@ -39,19 +38,7 @@ export default async function EstadoPage() {
   const mem = process.memoryUsage();
 
   return (
-    <div className="space-y-6">
-      <div>
-        <Link href="/admin" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
-          ← Volver a inmobiliarias
-        </Link>
-        <h1 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-slate-50">
-          Estado del sistema
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Salud del servidor y de la plataforma en este momento.
-        </p>
-      </div>
-
+    <div className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatusCard
           label="Base de datos"
@@ -74,24 +61,26 @@ export default async function EstadoPage() {
         <StatusCard label="Proceso" value="Activo" ok={true} hint={`Arriba hace ${formatUptime(process.uptime())}`} />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Versión y entorno</h2>
-        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-          <Field label="Versión de la app" value={packageJson.version} />
-          <Field label="Node.js" value={process.version} />
-          <Field label="Entorno" value={process.env.NODE_ENV ?? "—"} />
-          <Field label="Memoria (RSS)" value={formatMB(mem.rss)} />
-        </dl>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Versión y entorno</h2>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            <Field label="Versión de la app" value={packageJson.version} />
+            <Field label="Node.js" value={process.version} />
+            <Field label="Entorno" value={process.env.NODE_ENV ?? "—"} />
+            <Field label="Memoria (RSS)" value={formatMB(mem.rss)} />
+          </dl>
+        </div>
 
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Plataforma</h2>
-        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-          <Field label="Inmobiliarias" value={String(tenantTotal)} />
-          <Field label="Activas" value={String(tenantActive)} />
-          <Field label="Usuarios totales" value={String(userTotal)} />
-          <Field label="Super admins" value={String(superadminTotal)} />
-        </dl>
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Plataforma</h2>
+          <dl className="grid grid-cols-2 gap-4 text-sm">
+            <Field label="Inmobiliarias" value={String(tenantTotal)} />
+            <Field label="Activas" value={String(tenantActive)} />
+            <Field label="Usuarios totales" value={String(userTotal)} />
+            <Field label="Super admins" value={String(superadminTotal)} />
+          </dl>
+        </div>
       </div>
 
       <p className="text-xs text-slate-400 dark:text-slate-500">

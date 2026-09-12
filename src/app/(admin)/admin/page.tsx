@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/format";
 import { AdminSearchBox } from "@/components/admin-search-box";
+import { SystemStatus } from "@/components/system-status";
 
 export default async function AdminPage({
   searchParams,
@@ -33,7 +34,25 @@ export default async function AdminPage({
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <div>
+        <div className="flex items-start justify-between gap-4 mb-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Estado del sistema</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+              Salud del servidor y de la plataforma en este momento.
+            </p>
+          </div>
+          <Link
+            href="/admin/auditoria"
+            className="shrink-0 rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            Auditoría
+          </Link>
+        </div>
+        <SystemStatus />
+      </div>
+
       <div className="flex items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Inmobiliarias</h1>
@@ -41,26 +60,12 @@ export default async function AdminPage({
             Todas las cuentas dadas de alta en la plataforma.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/admin/estado"
-            className="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            Estado
-          </Link>
-          <Link
-            href="/admin/auditoria"
-            className="rounded-lg border border-slate-300 dark:border-slate-700 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
-          >
-            Auditoría
-          </Link>
-          <Link
-            href="/admin/nueva"
-            className="rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-2 text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-200"
-          >
-            Nueva inmobiliaria
-          </Link>
-        </div>
+        <Link
+          href="/admin/nueva"
+          className="shrink-0 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-2 text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-200"
+        >
+          Nueva inmobiliaria
+        </Link>
       </div>
 
       <AdminSearchBox />
