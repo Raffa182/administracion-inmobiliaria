@@ -38,6 +38,19 @@ ya tiene un campo `emailVerified` listo para sumar verificación por email
 (magic link / OTP) conectando un proveedor de envío de mails (Resend,
 SendGrid, etc.) al `EmailProvider` de Auth.js.
 
+### Roles
+
+- **ADMIN**: además de operar la inmobiliaria, gestiona el equipo
+  (`/dashboard/equipo`: alta/baja de usuarios `ADMIN`/`AGENTE`) y la
+  configuración (`/dashboard/configuracion`: logo de la inmobiliaria).
+- **AGENTE**: acceso operativo normal, sin gestión de equipo ni configuración.
+- **SUPERADMIN**: rol de plataforma, no pertenece a una inmobiliaria real.
+  Al iniciar sesión se lo redirige a `/admin`, donde ve todas las
+  inmobiliarias dadas de alta (usuarios, propiedades, contratos, ventas) y
+  puede activar/desactivar el acceso de cada una (un tenant desactivado no
+  puede iniciar sesión). Vive en un tenant dedicado (`plataforma`, creado
+  por el seed) que solo existe para alojarlo.
+
 ## Funcionalidad
 
 - **Propiedades**: ficha completa de cada inmueble (m², habitaciones,
@@ -67,6 +80,12 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   propiedad (escritura, IBI, basura) y del comprador (DNI, nómina).
 - **Importes en euros** y formato de fecha/número con la configuración
   regional española (`es-ES`).
+- **Equipo**: cada inmobiliaria (rol `ADMIN`) puede dar de alta o eliminar
+  usuarios (`ADMIN`/`AGENTE`) de su propio tenant.
+- **Logo**: cada inmobiliaria puede subir su logo desde
+  `/dashboard/configuracion`; se muestra en el encabezado del panel.
+- **Panel de plataforma** (`/admin`, rol `SUPERADMIN`): listado de todas las
+  inmobiliarias con métricas básicas y activación/desactivación de cuentas.
 
 ## Desarrollo local
 
@@ -79,11 +98,11 @@ npm run dev
 
 Abrir [http://localhost:3000](http://localhost:3000).
 
-**Usuario de demo** (creado por el seed):
+**Usuarios de demo** (creados por el seed):
 
-- Inmobiliaria: `demo`
-- Email: `demo@inmobiliaria.com`
-- Contraseña: `demo1234`
+- Inmobiliaria: `demo` · Email: `demo@inmobiliaria.com` (ADMIN) · Contraseña: `demo1234`
+- Inmobiliaria: `demo` · Email: `agente@inmobiliaria.com` (AGENTE) · Contraseña: `demo1234`
+- Super admin: Inmobiliaria: `plataforma` · Email: `superadmin@plataforma.com` · Contraseña: `superadmin1234`
 
 Para volver a cargar los datos de demo en cualquier momento:
 
@@ -104,9 +123,12 @@ src/lib/auth.config.ts       Config "edge-safe" reutilizada por el middleware
 src/lib/receipt.ts           Generación del PDF de recibo (pdf-lib)
 src/lib/labels.ts            Etiquetas compartidas para los enums del dominio
 src/app/(auth)/              Login y registro
-src/app/(dashboard)/         Dashboard, propiedades, reservas, contratos, ventas
+src/app/(dashboard)/         Dashboard, propiedades, reservas, contratos,
+                             ventas, equipo, configuración (logo)
+src/app/(admin)/admin/       Panel de plataforma (SUPERADMIN)
 src/app/api/                 Rutas API (propiedades, reservas, contratos,
-                             ventas, gastos, pagos, recibos, documentos, fotos)
+                             ventas, gastos, pagos, recibos, documentos,
+                             fotos, usuarios, tenant/logo, admin/tenants)
 ```
 
 ## Próximos pasos sugeridos
@@ -117,4 +139,5 @@ src/app/api/                 Rutas API (propiedades, reservas, contratos,
   volúmenes grandes).
 - Notificaciones automáticas de vencimiento de contrato y de actualización
   de alquiler próxima.
-- Roles y permisos más granulares (hoy solo `ADMIN`/`AGENTE`).
+- Permisos más granulares dentro de `AGENTE` (hoy es todo-o-nada dentro del
+  tenant); invitación por email en vez de alta directa con contraseña.

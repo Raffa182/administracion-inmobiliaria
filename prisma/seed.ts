@@ -39,11 +39,38 @@ async function main() {
       name: "Inmobiliaria Demo",
       slug: "demo",
       users: {
+        create: [
+          {
+            name: "Admin Demo",
+            email: "demo@inmobiliaria.com",
+            passwordHash,
+            role: "ADMIN",
+          },
+          {
+            name: "Agente Demo",
+            email: "agente@inmobiliaria.com",
+            passwordHash,
+            role: "AGENTE",
+          },
+        ],
+      },
+    },
+  });
+
+  // Tenant de plataforma: existe solo para alojar al usuario SUPERADMIN,
+  // que gestiona todas las inmobiliarias desde /admin (no tiene datos propios).
+  const platformPasswordHash = await bcrypt.hash("superadmin1234", 10);
+  await prisma.tenant.deleteMany({ where: { slug: "plataforma" } });
+  await prisma.tenant.create({
+    data: {
+      name: "Plataforma",
+      slug: "plataforma",
+      users: {
         create: {
-          name: "Admin Demo",
-          email: "demo@inmobiliaria.com",
-          passwordHash,
-          role: "ADMIN",
+          name: "Super Admin",
+          email: "superadmin@plataforma.com",
+          passwordHash: platformPasswordHash,
+          role: "SUPERADMIN",
         },
       },
     },
@@ -425,8 +452,9 @@ async function main() {
 
   console.log("Seed completado:");
   console.log(`  Inmobiliaria: ${tenant.slug}`);
-  console.log(`  Email: demo@inmobiliaria.com`);
+  console.log(`  Email: demo@inmobiliaria.com (admin) / agente@inmobiliaria.com (agente)`);
   console.log(`  Password: demo1234`);
+  console.log(`  Super admin: plataforma / superadmin@plataforma.com / superadmin1234`);
 }
 
 main()

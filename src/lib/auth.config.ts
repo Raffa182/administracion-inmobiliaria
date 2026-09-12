@@ -10,8 +10,11 @@ export const authConfig = {
   callbacks: {
     authorized: ({ auth, request }) => {
       const isLoggedIn = !!auth?.user;
-      const isProtected = request.nextUrl.pathname.startsWith("/dashboard");
+      const { pathname } = request.nextUrl;
+      const isAdminRoute = pathname.startsWith("/admin");
+      const isProtected = pathname.startsWith("/dashboard") || isAdminRoute;
       if (isProtected && !isLoggedIn) return false;
+      if (isAdminRoute && auth?.user?.role !== "SUPERADMIN") return false;
       return true;
     },
     jwt: async ({ token, user }) => {
