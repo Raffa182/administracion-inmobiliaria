@@ -38,24 +38,24 @@ export default async function ContratoDetailPage({
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/dashboard" className="text-sm text-slate-500 hover:text-slate-900">
+        <Link href="/dashboard" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a alquileres
         </Link>
         <div className="mt-2 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
               <Link href={`/dashboard/propiedades/${contract.propertyId}`} className="hover:underline">
                 {contract.property.address}
               </Link>
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {contract.property.type} · Inquilino: {contract.renter.name}
               {contract.renter.dni ? ` (DNI ${contract.renter.dni})` : ""}
               {" · "}
               {contractTypeLabels[contract.contractType]}
             </p>
           </div>
-          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
+          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
             {contract.status}
           </span>
         </div>
@@ -104,35 +104,35 @@ export default async function ContratoDetailPage({
               <a
                 href={contract.contractFileData}
                 download={contract.contractFileName ?? "contrato.pdf"}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 dark:border-slate-700 px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
               >
                 📄 {contract.contractFileName ?? "Ver contrato"}
               </a>
             ) : (
-              <p className="text-sm text-slate-400">No se subió el contrato digitalizado todavía.</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500">No se subió el contrato digitalizado todavía.</p>
             )}
           </Card>
 
           <Card title="Documentación del inquilino">
             <div className="space-y-2">
               {contract.renter.documents.length === 0 && (
-                <p className="text-sm text-slate-400">Sin documentos cargados.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin documentos cargados.</p>
               )}
               {contract.renter.documents.map((doc) => (
                 <a
                   key={doc.id}
                   href={doc.fileData}
                   download={doc.fileName}
-                  className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+                  className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
-                  <span className="text-sm text-slate-900">
+                  <span className="text-sm text-slate-900 dark:text-slate-50">
                     📄 {personDocumentLabels[doc.type]} · {doc.fileName}
                   </span>
-                  <span className="text-xs text-slate-400">{formatDate(doc.createdAt)}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{formatDate(doc.createdAt)}</span>
                 </a>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <FileUploadForm
                 endpoint={`/api/renters/${contract.renterId}/documentos`}
                 typeOptions={[
@@ -148,24 +148,24 @@ export default async function ContratoDetailPage({
           <Card title="IBI y arreglos">
             <div className="space-y-3">
               {contract.expenses.length === 0 && (
-                <p className="text-sm text-slate-400">Sin gastos registrados.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin gastos registrados.</p>
               )}
               {contract.expenses.map((exp) => (
                 <div
                   key={exp.id}
-                  className="flex items-center justify-between border border-slate-100 rounded-lg px-3 py-2"
+                  className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg px-3 py-2"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                       {expenseLabels[exp.type]} · {exp.description}
                     </p>
-                    <p className="text-xs text-slate-500">{formatDate(exp.date)}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{formatDate(exp.date)}</p>
                   </div>
-                  <p className="text-sm font-semibold text-slate-900">{formatEUR(exp.amount)}</p>
+                  <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{formatEUR(exp.amount)}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <ExpenseForm endpoint={`/api/contratos/${contract.id}/gastos`} />
             </div>
           </Card>
@@ -175,7 +175,7 @@ export default async function ContratoDetailPage({
           <Card title="Pagos">
             <div className="space-y-3">
               {contract.payments.length === 0 && (
-                <p className="text-sm text-slate-400">Todavía no hay pagos generados.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Todavía no hay pagos generados.</p>
               )}
               {contract.payments.map((p) => (
                 <PaymentRow
@@ -190,7 +190,7 @@ export default async function ContratoDetailPage({
               ))}
             </div>
             {!hasCurrentPeriodPayment && (
-              <div className="mt-4 pt-4 border-t border-slate-100">
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <GeneratePaymentButton contractId={contract.id} />
               </div>
             )}
@@ -203,8 +203,8 @@ export default async function ContratoDetailPage({
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h2 className="text-sm font-semibold text-slate-900 mb-4">{title}</h2>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">{title}</h2>
       {children}
     </div>
   );
@@ -223,10 +223,10 @@ function Info({
 }) {
   return (
     <div>
-      <dt className="text-xs text-slate-500">{label}</dt>
-      <dd className="mt-0.5 font-medium text-slate-900">{value}</dd>
+      <dt className="text-xs text-slate-500 dark:text-slate-400">{label}</dt>
+      <dd className="mt-0.5 font-medium text-slate-900 dark:text-slate-50">{value}</dd>
       {hint && (
-        <dd className={`text-xs mt-0.5 ${warn ? "text-amber-600" : "text-slate-400"}`}>{hint}</dd>
+        <dd className={`text-xs mt-0.5 ${warn ? "text-amber-600 dark:text-amber-400" : "text-slate-400 dark:text-slate-500"}`}>{hint}</dd>
       )}
     </div>
   );

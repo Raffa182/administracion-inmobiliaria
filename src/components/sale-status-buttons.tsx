@@ -34,8 +34,8 @@ export function SaleStatusButtons({ saleId, status }: { saleId: string; status: 
           disabled={loading !== null || status === opt.value}
           className={`rounded-lg border px-3 py-2 text-xs font-medium transition disabled:opacity-50 ${
             status === opt.value
-              ? "bg-slate-900 text-white border-slate-900"
-              : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"
+              ? "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100"
+              : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
           }`}
         >
           {loading === opt.value ? "…" : opt.label}

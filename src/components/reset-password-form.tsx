@@ -41,7 +41,7 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
           setOk(false);
           setError(null);
         }}
-        className="text-xs font-medium text-slate-600 hover:text-slate-900"
+        className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50"
       >
         Resetear contraseña
       </button>
@@ -57,24 +57,24 @@ export function ResetPasswordForm({ userId }: { userId: string }) {
         required
         minLength={6}
         autoFocus
-        className="rounded-lg border border-slate-300 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900"
+        className="rounded-lg border border-slate-300 dark:border-slate-700 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 dark:focus:ring-slate-100"
       />
       <button
         type="submit"
         disabled={loading}
-        className="text-xs font-medium text-slate-900 hover:underline disabled:opacity-60"
+        className="text-xs font-medium text-slate-900 dark:text-slate-50 hover:underline disabled:opacity-60"
       >
         {loading ? "…" : "Guardar"}
       </button>
       <button
         type="button"
         onClick={() => setOpen(false)}
-        className="text-xs text-slate-400 hover:text-slate-600"
+        className="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
       >
         Cancelar
       </button>
-      {ok && <span className="text-xs text-emerald-600">Listo</span>}
-      {error && <span className="text-xs text-red-600">{error}</span>}
+      {ok && <span className="text-xs text-emerald-600 dark:text-emerald-400">Listo</span>}
+      {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}
     </form>
   );
 }

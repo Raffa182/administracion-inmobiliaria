@@ -3,6 +3,8 @@ import { formatEUR } from "@/lib/format";
 type Punto = { label: string; amount: number; current?: boolean };
 
 // SVG simple sin librería: 6 barras no justifican sumar una dependencia.
+// Los colores van por clases fill-*/stroke-* (no atributos fill= hex) para
+// que respondan a dark: igual que el resto de la UI.
 export function IngresosChart({ data }: { data: Punto[] }) {
   const width = 560;
   const height = 200;
@@ -25,25 +27,37 @@ export function IngresosChart({ data }: { data: Punto[] }) {
         y1={height - paddingBottom}
         x2={width}
         y2={height - paddingBottom}
-        stroke="#e2e8f0"
         strokeWidth={1}
+        className="stroke-slate-200 dark:stroke-slate-700"
       />
       {data.map((d, i) => {
         const barHeight = (d.amount / max) * plotHeight;
         const x = i * (barWidth + barGap);
         const y = height - paddingBottom - barHeight;
-        const fill = d.amount === 0 ? "#e2e8f0" : d.current ? "#059669" : "#6ee7b7";
+        const barFill =
+          d.amount === 0
+            ? "fill-slate-200 dark:fill-slate-700"
+            : d.current
+            ? "fill-emerald-600 dark:fill-emerald-400"
+            : "fill-emerald-200 dark:fill-emerald-800";
         return (
           <g key={d.label}>
             <title>{`${d.label}: ${formatEUR(d.amount)}`}</title>
-            <rect x={x} y={y} width={barWidth} height={Math.max(barHeight, 2)} rx={4} fill={fill} />
+            <rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={Math.max(barHeight, 2)}
+              rx={4}
+              className={barFill}
+            />
             <text
               x={x + barWidth / 2}
               y={y - 6}
               textAnchor="middle"
               fontSize={10}
               fontWeight={600}
-              fill="#334155"
+              className="fill-slate-700 dark:fill-slate-300"
             >
               {d.amount > 0 ? formatEUR(d.amount) : ""}
             </text>
@@ -52,7 +66,7 @@ export function IngresosChart({ data }: { data: Punto[] }) {
               y={height - paddingBottom + 16}
               textAnchor="middle"
               fontSize={10}
-              fill="#64748b"
+              className="fill-slate-500 dark:fill-slate-400"
             >
               {d.label}
             </text>

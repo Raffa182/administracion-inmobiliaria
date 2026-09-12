@@ -36,8 +36,8 @@ export function ToggleTenantActiveButton({
       disabled={loading}
       className={`text-xs font-medium px-3 py-1.5 rounded-lg border transition disabled:opacity-60 ${
         active
-          ? "border-red-200 text-red-600 hover:bg-red-50"
-          : "border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+          ? "border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900"
+          : "border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-900"
       }`}
     >
       {loading ? "Guardando…" : active ? "Desactivar" : "Reactivar"}

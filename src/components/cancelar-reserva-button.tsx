@@ -23,7 +23,7 @@ export function CancelarReservaButton({ reservationId }: { reservationId: string
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full rounded-lg border border-slate-300 text-sm font-medium py-2 text-slate-600 hover:bg-slate-50 transition disabled:opacity-60"
+      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-medium py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-60"
     >
       {loading ? "Cancelando…" : "Cancelar reserva"}
     </button>

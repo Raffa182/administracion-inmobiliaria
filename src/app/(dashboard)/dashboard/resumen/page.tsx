@@ -53,8 +53,8 @@ export default async function ResumenPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900">Resumen</h1>
-        <p className="text-sm text-slate-500 mt-1">Cómo viene el negocio este mes</p>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Resumen</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Cómo viene el negocio este mes</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -83,8 +83,8 @@ export default async function ResumenPage() {
         </Link>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-2xl p-5">
-        <h2 className="text-sm font-semibold text-slate-900 mb-4">Cobrado por mes</h2>
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">Cobrado por mes</h2>
         <IngresosChart data={chartData} />
       </div>
     </div>
@@ -103,12 +103,12 @@ function StatCard({
   accent?: "amber" | "red";
 }) {
   const color =
-    accent === "amber" ? "text-amber-600" : accent === "red" ? "text-red-600" : "text-slate-900";
+    accent === "amber" ? "text-amber-600 dark:text-amber-400" : accent === "red" ? "text-red-600 dark:text-red-400" : "text-slate-900 dark:text-slate-50";
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 h-full">
-      <p className="text-sm text-slate-500">{label}</p>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 h-full">
+      <p className="text-sm text-slate-500 dark:text-slate-400">{label}</p>
       <p className={`text-3xl font-semibold mt-1 ${color}`}>{value}</p>
-      {hint && <p className="text-xs text-slate-400 mt-1">{hint}</p>}
+      {hint && <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{hint}</p>}
     </div>
   );
 }

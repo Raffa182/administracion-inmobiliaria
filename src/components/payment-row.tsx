@@ -30,10 +30,10 @@ export function PaymentRow({
   }
 
   return (
-    <div className="flex items-center justify-between border border-slate-100 rounded-lg px-3 py-2.5">
+    <div className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg px-3 py-2.5">
       <div>
-        <p className="text-sm font-medium text-slate-900 capitalize">{periodLabel}</p>
-        <p className="text-xs text-slate-500">
+        <p className="text-sm font-medium text-slate-900 dark:text-slate-50 capitalize">{periodLabel}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
           {formatEUR(amount)}
           {paidDate ? ` · pagado el ${paidDate}` : ""}
         </p>
@@ -41,13 +41,13 @@ export function PaymentRow({
       <div className="flex items-center gap-2">
         {status === "PAGADO" ? (
           <>
-            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-emerald-50 text-emerald-700 border-emerald-200">
+            <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800">
               Pagado
             </span>
             {hasReceipt && (
               <a
                 href={`/api/pagos/${id}/recibo`}
-                className="text-xs font-medium text-slate-600 hover:text-slate-900 underline"
+                className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 underline"
               >
                 Recibo
               </a>
@@ -57,7 +57,7 @@ export function PaymentRow({
           <button
             onClick={marcarPagado}
             disabled={loading}
-            className="rounded-lg bg-slate-900 text-white text-xs font-medium px-3 py-1.5 hover:bg-slate-800 transition disabled:opacity-60"
+            className="rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-medium px-3 py-1.5 hover:bg-slate-800 dark:hover:bg-slate-200 transition disabled:opacity-60"
           >
             {loading ? "Generando…" : "Marcar pagado"}
           </button>

@@ -18,7 +18,7 @@ export function GeneratePaymentButton({ contractId }: { contractId: string }) {
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full rounded-lg border border-slate-300 text-sm font-medium py-2 text-slate-700 hover:bg-slate-50 transition disabled:opacity-60"
+      className="w-full rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-medium py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition disabled:opacity-60"
     >
       {loading ? "Generando…" : "Generar pago del mes actual"}
     </button>

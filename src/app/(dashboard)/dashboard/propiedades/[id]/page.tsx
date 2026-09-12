@@ -49,21 +49,21 @@ export default async function PropiedadDetailPage({
   return (
     <div className="space-y-8">
       <div>
-        <Link href="/dashboard/propiedades" className="text-sm text-slate-500 hover:text-slate-900">
+        <Link href="/dashboard/propiedades" className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50">
           ← Volver a propiedades
         </Link>
         <div className="mt-2 flex items-start justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
+            <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
               {property.address}
               {property.unit ? `, ${property.unit}` : ""}
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               {property.type} · {property.city ?? "Sin ciudad"}
               {property.inUrbanizacion && property.complexName ? ` · Urb. ${property.complexName}` : ""}
             </p>
           </div>
-          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 border-slate-200">
+          <span className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800">
             {listingTypeLabels[property.listingType]}
           </span>
         </div>
@@ -93,7 +93,7 @@ export default async function PropiedadDetailPage({
               />
             </dl>
             {property.notes && (
-              <p className="mt-4 text-sm text-slate-600 border-t border-slate-100 pt-4">
+              <p className="mt-4 text-sm text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-4">
                 {property.notes}
               </p>
             )}
@@ -101,7 +101,7 @@ export default async function PropiedadDetailPage({
 
           <Card title="Fotos de la propiedad">
             <PhotoGrid photos={propertyPhotos} />
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <FileUploadForm
                 endpoint={`/api/propiedades/${property.id}/fotos`}
                 typeOptions={[{ value: "PROPIEDAD", label: "Foto de la propiedad" }]}
@@ -112,11 +112,11 @@ export default async function PropiedadDetailPage({
           </Card>
 
           <Card title="Fotos de llaves">
-            <p className="text-xs text-slate-500 mb-3">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
               Para identificar a qué propiedad corresponde cada llave si se pierde la etiqueta.
             </p>
             <PhotoGrid photos={keyPhotos} showLabel />
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <FileUploadForm
                 endpoint={`/api/propiedades/${property.id}/fotos`}
                 typeOptions={[{ value: "LLAVE", label: "Foto de llave" }]}
@@ -131,23 +131,23 @@ export default async function PropiedadDetailPage({
           <Card title="Documentos de la propiedad">
             <div className="space-y-2">
               {property.documents.length === 0 && (
-                <p className="text-sm text-slate-400">Sin documentos cargados.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin documentos cargados.</p>
               )}
               {property.documents.map((doc) => (
                 <a
                   key={doc.id}
                   href={doc.fileData}
                   download={doc.fileName}
-                  className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+                  className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
-                  <span className="text-sm text-slate-900">
+                  <span className="text-sm text-slate-900 dark:text-slate-50">
                     📄 {propertyDocumentLabels[doc.type]} · {doc.fileName}
                   </span>
-                  <span className="text-xs text-slate-400">{formatDate(doc.createdAt)}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500">{formatDate(doc.createdAt)}</span>
                 </a>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <FileUploadForm
                 endpoint={`/api/propiedades/${property.id}/documentos`}
                 typeOptions={[
@@ -161,26 +161,26 @@ export default async function PropiedadDetailPage({
           <Card title="IBI, basura y otros gastos">
             <div className="space-y-2">
               {property.expenses.length === 0 && (
-                <p className="text-sm text-slate-400">Sin gastos registrados.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin gastos registrados.</p>
               )}
               {property.expenses.map((exp) => (
                 <div
                   key={exp.id}
-                  className="flex items-center justify-between border border-slate-100 rounded-lg px-3 py-2"
+                  className="flex items-center justify-between border border-slate-100 dark:border-slate-800 rounded-lg px-3 py-2"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                       {expenseLabels[exp.type]} · {exp.description}
                     </p>
-                    <p className="text-xs text-slate-500">{formatDate(exp.date)}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{formatDate(exp.date)}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-sm font-semibold text-slate-900">{formatEUR(exp.amount)}</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-50">{formatEUR(exp.amount)}</p>
                     {exp.receiptFileData && (
                       <a
                         href={exp.receiptFileData}
                         download={exp.receiptFileName ?? "recibo"}
-                        className="text-xs font-medium text-slate-600 hover:text-slate-900 underline"
+                        className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50 underline"
                       >
                         Recibo
                       </a>
@@ -189,7 +189,7 @@ export default async function PropiedadDetailPage({
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800">
               <ExpenseForm endpoint={`/api/propiedades/${property.id}/gastos`} />
             </div>
           </Card>
@@ -199,17 +199,17 @@ export default async function PropiedadDetailPage({
           <Card title="Contratos de alquiler">
             <div className="space-y-2">
               {property.contracts.length === 0 && (
-                <p className="text-sm text-slate-400">Sin contratos.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin contratos.</p>
               )}
               {property.contracts.map((c) => (
                 <Link
                   key={c.id}
                   href={`/dashboard/contratos/${c.id}`}
-                  className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+                  className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900">{c.renter.name}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-50">{c.renter.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {formatDate(c.startDate)} → {formatDate(c.endDate)}
                     </p>
                   </div>
@@ -226,19 +226,19 @@ export default async function PropiedadDetailPage({
           <Card title="Ventas">
             <div className="space-y-2">
               {property.sales.length === 0 && (
-                <p className="text-sm text-slate-400">Sin ventas.</p>
+                <p className="text-sm text-slate-400 dark:text-slate-500">Sin ventas.</p>
               )}
               {property.sales.map((s) => (
                 <Link
                   key={s.id}
                   href={`/dashboard/ventas/${s.id}`}
-                  className="flex items-center justify-between rounded-lg border border-slate-100 px-3 py-2 hover:bg-slate-50"
+                  className="flex items-center justify-between rounded-lg border border-slate-100 dark:border-slate-800 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-900">
+                    <p className="text-sm font-medium text-slate-900 dark:text-slate-50">
                       {s.buyer ? s.buyer.name : "Sin comprador"}
                     </p>
-                    <p className="text-xs text-slate-500">{formatEUR(s.price)}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{formatEUR(s.price)}</p>
                   </div>
                   <span
                     className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${saleStatusStyles[s.status]}`}
@@ -262,8 +262,8 @@ function boolLabel(value: boolean | null) {
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5">
-      <h2 className="text-sm font-semibold text-slate-900 mb-4">{title}</h2>
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-50 mb-4">{title}</h2>
       {children}
     </div>
   );
@@ -272,8 +272,8 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs text-slate-500">{label}</dt>
-      <dd className="mt-0.5 font-medium text-slate-900">{value}</dd>
+      <dt className="text-xs text-slate-500 dark:text-slate-400">{label}</dt>
+      <dd className="mt-0.5 font-medium text-slate-900 dark:text-slate-50">{value}</dd>
     </div>
   );
 }
@@ -286,7 +286,7 @@ function PhotoGrid({
   showLabel?: boolean;
 }) {
   if (photos.length === 0) {
-    return <p className="text-sm text-slate-400">Sin fotos todavía.</p>;
+    return <p className="text-sm text-slate-400 dark:text-slate-500">Sin fotos todavía.</p>;
   }
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -297,10 +297,10 @@ function PhotoGrid({
           <img
             src={photo.fileData}
             alt={photo.label ?? photo.fileName}
-            className="w-full aspect-square object-cover rounded-lg border border-slate-200"
+            className="w-full aspect-square object-cover rounded-lg border border-slate-200 dark:border-slate-800"
           />
           {showLabel && photo.label && (
-            <p className="mt-1 text-xs text-slate-500 truncate">{photo.label}</p>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 truncate">{photo.label}</p>
           )}
         </a>
       ))}

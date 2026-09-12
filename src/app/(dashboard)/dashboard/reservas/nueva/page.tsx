@@ -21,8 +21,8 @@ export default async function NuevaReservaPage() {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="text-2xl font-semibold text-slate-900">Nueva reserva</h1>
-      <p className="text-sm text-slate-500 mt-1">
+      <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">Nueva reserva</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
         Paso previo al contrato de alquiler, con la seña u honorarios acordados
       </p>
 
