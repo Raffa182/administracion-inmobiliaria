@@ -7,6 +7,7 @@ const actionLabels: Record<string, string> = {
   REACTIVAR_TENANT: "Reactivó",
   DESACTIVAR_TENANT: "Desactivó",
   EDITAR_TENANT: "Editó",
+  EDITAR_EMAIL_USUARIO: "Editó el email de",
   BORRAR_TENANT: "Borró",
   CREAR_TENANT: "Creó",
   RESETEAR_PASSWORD: "Reseteó contraseña de",

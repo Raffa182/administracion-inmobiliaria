@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/format";
 import { EditarTenantForm } from "@/components/editar-tenant-form";
 import { BorrarTenantButton } from "@/components/borrar-tenant-button";
 import { ResetPasswordForm } from "@/components/reset-password-form";
+import { EditarEmailForm } from "@/components/editar-email-form";
 import { ToggleTenantActiveButton } from "@/components/toggle-tenant-active-button";
 
 const roleLabels: Record<string, string> = {
@@ -83,7 +84,10 @@ export default async function AdminTenantDetailPage({
                   {u.email} · {roleLabels[u.role] ?? u.role} · alta {formatDate(u.createdAt)}
                 </p>
               </div>
-              <ResetPasswordForm userId={u.id} />
+              <div className="flex items-center gap-3">
+                <EditarEmailForm userId={u.id} email={u.email} />
+                <ResetPasswordForm userId={u.id} />
+              </div>
             </div>
           ))}
           {tenant.users.length === 0 && (

@@ -53,8 +53,9 @@ SendGrid, etc.) al `EmailProvider` de Auth.js.
   - Editar el nombre/slug de una inmobiliaria, o borrarla por completo
     (con todos sus datos; requiere escribir el slug para confirmar).
   - Dar de alta una inmobiliaria manualmente, con su primer usuario admin.
-  - Resetear la contraseña de cualquier usuario (soporte cuando el cliente
-    se queda sin acceso).
+  - Editar el email o resetear la contraseña de cualquier usuario
+    (soporte cuando el cliente se queda sin acceso o escribió mal el
+    email al registrarse).
   - **Entrar como una inmobiliaria** ("impersonar"): toma la identidad de
     su primer usuario ADMIN para ver la app exactamente como la ve ese
     cliente. Un banner naranja indica que está en modo soporte y permite
