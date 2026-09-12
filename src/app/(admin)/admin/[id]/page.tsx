@@ -6,6 +6,7 @@ import { EditarTenantForm } from "@/components/editar-tenant-form";
 import { BorrarTenantButton } from "@/components/borrar-tenant-button";
 import { ResetPasswordForm } from "@/components/reset-password-form";
 import { EditarEmailForm } from "@/components/editar-email-form";
+import { ImpersonarButton } from "@/components/impersonar-button";
 import { ToggleTenantActiveButton } from "@/components/toggle-tenant-active-button";
 
 const roleLabels: Record<string, string> = {
@@ -99,16 +100,7 @@ export default async function AdminTenantDetailPage({
       <div className="bg-white border border-slate-200 rounded-2xl p-5">
         <h2 className="text-sm font-semibold text-slate-900 mb-4">Soporte</h2>
         {hasAdmin ? (
-          <form action={`/api/admin/tenants/${tenant.id}/impersonar`} method="POST">
-            <button
-              type="submit"
-              disabled={!tenant.active}
-              className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              title={!tenant.active ? "Reactivá la inmobiliaria primero" : undefined}
-            >
-              Entrar como esta inmobiliaria
-            </button>
-          </form>
+          <ImpersonarButton tenantId={tenant.id} disabled={!tenant.active} />
         ) : (
           <p className="text-sm text-slate-400">
             No tiene un usuario ADMIN para entrar en su nombre.
