@@ -66,6 +66,12 @@ export default async function DashboardLayout({
 
           <nav className="hidden sm:flex items-center gap-1">
             <Link
+              href="/dashboard/resumen"
+              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
+            >
+              Resumen
+            </Link>
+            <Link
               href="/dashboard"
               className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100"
             >
