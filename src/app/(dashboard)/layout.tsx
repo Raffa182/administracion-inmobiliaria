@@ -3,9 +3,14 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getAlerts, countAlerts } from "@/lib/alerts";
-import { SignOutButton } from "@/components/sign-out-button";
+import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { VolverAAdminButton } from "@/components/volver-a-admin-button";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+function initialsOf(name: string) {
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase() || "U";
+}
 
 export default async function DashboardLayout({
   children,
@@ -40,112 +45,40 @@ export default async function DashboardLayout({
           <VolverAAdminButton />
         </div>
       )}
-      <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            {tenant?.logoFileData ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={tenant.logoFileData}
-                alt={session?.user?.tenantName ?? "Logo"}
-                className="h-9 w-9 rounded-lg object-cover border border-slate-200 dark:border-slate-800"
-              />
-            ) : (
-              <div className="h-9 w-9 flex items-center justify-center rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold text-sm">
-                GI
-              </div>
-            )}
-            <div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-50 leading-tight">
-                {session?.user?.tenantName ?? "Gestión Inmobiliaria"}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
-                {session?.user?.email}
-              </p>
-            </div>
-          </div>
 
-          <nav className="hidden sm:flex items-center gap-1">
-            <Link
-              href="/dashboard/resumen"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Resumen
-            </Link>
-            <Link
-              href="/dashboard"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Alquileres
-            </Link>
-            <Link
-              href="/dashboard/reservas"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Reservas
-            </Link>
-            <Link
-              href="/dashboard/ventas"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Ventas
-            </Link>
-            <Link
-              href="/dashboard/propiedades"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Propiedades
-            </Link>
-            <Link
-              href="/dashboard/leads"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Leads
-            </Link>
-            <Link
-              href="/dashboard/agenda"
-              className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-            >
-              Agenda
-            </Link>
+      <div className="flex-1 flex min-h-0">
+        <DashboardSidebar
+          tenantName={session?.user?.tenantName ?? "Gestión Inmobiliaria"}
+          tenantLogo={tenant?.logoFileData ?? null}
+          userEmail={session?.user?.email ?? ""}
+          userInitials={initialsOf(session?.user?.name || session?.user?.email || "U")}
+          isAdmin={isAdmin}
+        />
+
+        <div className="flex-1 min-w-0 flex flex-col">
+          <header className="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 sm:px-8 py-3 flex items-center justify-end gap-4">
             <Link
               href="/dashboard/notificaciones"
-              className="relative px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="relative text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-50"
+              aria-label="Notificaciones"
             >
-              Notificaciones
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M18 8a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+              </svg>
               {alertCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold text-white">
                   {alertCount > 9 ? "9+" : alertCount}
                 </span>
               )}
             </Link>
-            {isAdmin && (
-              <Link
-                href="/dashboard/equipo"
-                className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                Equipo
-              </Link>
-            )}
-            {isAdmin && (
-              <Link
-                href="/dashboard/configuracion"
-                className="px-3 py-1.5 text-sm font-medium rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-              >
-                Configuración
-              </Link>
-            )}
-          </nav>
-
-          <div className="flex items-center gap-4">
             <ThemeToggle />
-            <SignOutButton />
-          </div>
+          </header>
+          <main className="flex-1 overflow-y-auto">
+            <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8">{children}</div>
+          </main>
         </div>
-      </header>
-      <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8">
-        {children}
-      </main>
+      </div>
     </div>
   );
 }
