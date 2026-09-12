@@ -33,6 +33,8 @@ export const authConfig = {
         session.user.tenantSlug = token.tenantSlug as string;
         session.user.tenantName = token.tenantName as string;
         session.user.role = token.role as string;
+        session.user.impersonating = !!token.adminOrigin;
+        session.user.adminOrigin = token.adminOrigin ?? null;
       }
       return session;
     },

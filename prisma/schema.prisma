@@ -17,6 +17,24 @@ enum Role {
   SUPERADMIN
 }
 
+// Registro de acciones del super admin sobre las inmobiliarias. No usa
+// relaciones (FK) a Tenant/User a propósito: debe sobrevivir si el tenant o
+// el usuario referido se borran, para conservar el historial.
+model AdminAuditLog {
+  id                String   @id @default(cuid())
+  actorUserId       String
+  actorEmail        String
+  action            String
+  targetTenantId    String?
+  targetTenantSlug  String?
+  targetTenantName  String?
+  targetUserEmail   String?
+  details           String?
+  createdAt         DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 enum ContractStatus {
   ACTIVO
   FINALIZADO

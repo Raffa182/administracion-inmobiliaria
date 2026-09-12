@@ -1,5 +1,15 @@
 import { DefaultSession } from "next-auth";
 
+interface AdminOrigin {
+  id: string;
+  email: string;
+  name: string;
+  tenantId: string;
+  tenantSlug: string;
+  tenantName: string;
+  role: string;
+}
+
 declare module "next-auth" {
   interface User {
     tenantId: string;
@@ -15,6 +25,8 @@ declare module "next-auth" {
       tenantSlug: string;
       tenantName: string;
       role: string;
+      impersonating?: boolean;
+      adminOrigin?: AdminOrigin | null;
     } & DefaultSession["user"];
   }
 }
@@ -25,5 +37,8 @@ declare module "next-auth/jwt" {
     tenantSlug: string;
     tenantName: string;
     role: string;
+    // Presente solo durante una sesión de impersonación ("entrar como"):
+    // identidad real del SUPERADMIN, para poder volver a /admin.
+    adminOrigin?: AdminOrigin | null;
   }
 }
